@@ -1,2 +1,0 @@
-﻿// Ver este comentario implica un error en la generación de código del archivo 'C:\Users\ReyvingF\OneDrive\Escritorio\Autogestion-Sena\Diagram2\DbAutogestion.edmx'
-//. Vea ErrorList para obtener detalles.

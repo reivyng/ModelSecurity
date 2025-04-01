@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Entity.Model
 {
-    class Module
+    public class Module
     {
-        public int Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public bool Active { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime DeleteAt { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public bool active { get; set; }
+        public DateTime create_date { get; set; }
+        public DateTime delete_date { get; set; }
+        public DateTime update_date { get; set; }
     }
 }

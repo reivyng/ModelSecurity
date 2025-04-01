@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entity.DTOautogestion
 {
-    internal class FormDTOAuto
+    public class FormDTOAuto
     {
         public int Id { get; set; }
         public string Description { get; set; }

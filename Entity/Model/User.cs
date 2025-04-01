@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 
 namespace Entity.Model
 {
-    class User
+    public class User
     {
         public int Id { get; set; }
+        public string username { get; set; }
+        public string email { get; set; }
+        public string password { get; set; }
+
         public int PersonId { get; set; }
         public Person Person { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public bool Active { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime DeleteAt { get; set; }
     }
 }

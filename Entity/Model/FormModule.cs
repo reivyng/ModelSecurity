@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace Entity.Model
 {
-    class FormModule
+    public class FormModule
     {
         public int Id { get; set; }
-        public int ModuleId { get; set; }
-        public Module Module { get; set; }
+        public string status_procedure { get; set; }
         public int FormId { get; set; }
         public Form Form { get; set; }
-        public DateTime DeleteAt { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public int ModuleId { get; set; }
+        public Module Module { get; set; }
     }
 }
