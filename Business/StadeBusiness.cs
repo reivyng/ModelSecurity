@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los registros de Stade.
     /// Implementa la lógica de negocio para la gestión de registros de Stade, incluyendo operaciones CRUD.
     /// </summary>
-    internal class StadeBusiness
+    public class StadeBusiness
     {
         // Dependencias inyectadas
         private readonly StadeData _stadeData; // Acceso a la capa de datos

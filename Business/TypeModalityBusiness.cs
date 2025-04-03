@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con las modalidades.
     /// Implementa la lógica de negocio para la gestión de modalidades, incluyendo operaciones CRUD.
     /// </summary>
-    internal class TypeModalityBusiness
+    public class TypeModalityBusiness
     {
         // Dependencias inyectadas
         private readonly TypeModalityData _typeModalityData; // Acceso a la capa de datos

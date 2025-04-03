@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los centros.
     /// Implementa la lógica de negocio para la gestión de centros, incluyendo operaciones CRUD.
     /// </summary>
-    internal class CenterBusiness
+    public class CenterBusiness
     {
         // Dependencias inyectadas
         private readonly CenterData _centerData; // Acceso a la capa de datos

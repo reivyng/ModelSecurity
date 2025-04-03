@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con las empresas.
     /// Implementa la lógica de negocio para la gestión de empresas, incluyendo operaciones CRUD.
     /// </summary>
-    internal class EnterpriseBusiness
+    public class EnterpriseBusiness
     {
         // Dependencias inyectadas
         private readonly EnterpriseData _enterpriseData; // Acceso a la capa de datos

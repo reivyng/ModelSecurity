@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los registros de UserSede.
     /// Implementa la lógica de negocio para la gestión de registros de UserSede, incluyendo operaciones CRUD.
     /// </summary>
-    internal class UserSedeBusiness
+    public class UserSedeBusiness
     {
         // Dependencias inyectadas
         private readonly UserSedeData _userSedeData; // Acceso a la capa de datos

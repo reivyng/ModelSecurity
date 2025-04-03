@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los programas.
     /// Implementa la lógica de negocio para la gestión de programas, incluyendo operaciones CRUD.
     /// </summary>
-    internal class ProgramBusiness
+    public class ProgramBusiness
     {
         // Dependencias inyectadas
         private readonly ProgramData _programData; // Acceso a la capa de datos

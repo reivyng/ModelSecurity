@@ -9,8 +9,6 @@ namespace Entity.Model
     public class ChangeLog
     {
         public int Id { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime DeleteAt { get; set; }
         public string TableName { get; set; }
         public int IdTable { get; set; }
         public string OldValues { get; set; }
@@ -18,5 +16,7 @@ namespace Entity.Model
         public string Action { get; set; }
         public bool Active { get; set; }
         public string UserName { get; set; }
+        public DateTime CreateAt { get; set; }
+        public DateTime DeleteAt { get; set; }
     }
 }

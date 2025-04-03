@@ -1,5 +1,6 @@
 ﻿using Business;
 using Data;
+using Entity.DTOautogestion;
 using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ namespace Web.Controllers
         /// <response code="200">Retorna la lista de relaciones</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<RolUserDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<UserRolDTO>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllRolUsers()
         {

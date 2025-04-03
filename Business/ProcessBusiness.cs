@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los procesos.
     /// Implementa la lógica de negocio para la gestión de procesos, incluyendo operaciones CRUD.
     /// </summary>
-    internal class ProcessBusiness
+    public class ProcessBusiness
     {
         // Dependencias inyectadas
         private readonly ProcessData _processData; // Acceso a la capa de datos

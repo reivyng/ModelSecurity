@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los registros regionales.
     /// Implementa la lógica de negocio para la gestión de registros regionales, incluyendo operaciones CRUD.
     /// </summary>
-    internal class RegionalBusiness
+    public class RegionalBusiness
     {
         // Dependencias inyectadas
         private readonly RegionalData _regionalData; // Acceso a la capa de datos

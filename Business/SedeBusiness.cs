@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con las sedes.
     /// Implementa la lógica de negocio para la gestión de sedes, incluyendo operaciones CRUD.
     /// </summary>
-    internal class SedeBusiness
+    public class SedeBusiness
     {
         // Dependencias inyectadas
         private readonly SedeData _sedeData; // Acceso a la capa de datos

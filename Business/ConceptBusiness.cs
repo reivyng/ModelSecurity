@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los conceptos.
     /// Implementa la lógica de negocio para la gestión de conceptos, incluyendo operaciones CRUD.
     /// </summary>
-    internal class ConceptBusiness
+    public class ConceptBusiness
     {
         // Dependencias inyectadas
         private readonly ConceptData _conceptData; // Acceso a la capa de datos

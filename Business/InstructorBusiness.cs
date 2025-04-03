@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los instructores.
     /// Implementa la lógica de negocio para la gestión de instructores, incluyendo operaciones CRUD.
     /// </summary>
-    internal class InstructorBusiness
+    public class InstructorBusiness
     {
         // Dependencias inyectadas
         private readonly InstructorData _instructorData; // Acceso a la capa de datos

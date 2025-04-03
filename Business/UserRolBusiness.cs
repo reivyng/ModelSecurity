@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con las relaciones entre roles y usuarios.
     /// Implementa la lógica de negocio para la gestión de relaciones entre roles y usuarios, incluyendo operaciones CRUD.
     /// </summary>
-    internal class UserRolBusiness
+    public class UserRolBusiness
     {
         // Dependencias inyectadas
         private readonly UserRolData _userRolData; // Acceso a la capa de datos

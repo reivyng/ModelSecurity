@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los registros de Sofia.
     /// Implementa la lógica de negocio para la gestión de registros de Sofia, incluyendo operaciones CRUD.
     /// </summary>
-    internal class RegisterySofiaBusiness
+    public class RegisterySofiaBusiness
     {
         // Dependencias inyectadas
         private readonly RegisterySofiaData _registerySofiaData; // Acceso a la capa de datos

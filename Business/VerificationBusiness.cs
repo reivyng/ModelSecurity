@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con las verificaciones.
     /// Implementa la lógica de negocio para la gestión de verificaciones, incluyendo operaciones CRUD.
     /// </summary>
-    internal class VerificationBusiness
+    public class VerificationBusiness
     {
         // Dependencias inyectadas
         private readonly VerificationData _verificationData; // Acceso a la capa de datos

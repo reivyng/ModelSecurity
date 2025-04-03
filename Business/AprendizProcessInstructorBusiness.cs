@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con el proceso de instructores de aprendices.
     /// Implementa la lógica de negocio para la gestión de procesos de instructores, incluyendo operaciones CRUD.
     /// </summary>
-    internal class AprendizProcessInstructorBusiness
+    public class AprendizProcessInstructorBusiness
     {
         // Dependencias inyectadas
         private readonly AprendizProcessInstructorData _aprendizProcessInstructorData; // Acceso a la capa de datos

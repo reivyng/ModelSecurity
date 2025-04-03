@@ -11,7 +11,7 @@ namespace Business
     /// Clase de negocio encargada de la lógica relacionada con los programas de aprendices.
     /// Implementa la lógica de negocio para la gestión de programas de aprendices, incluyendo operaciones CRUD.
     /// </summary>
-    internal class AprendizProgramBusiness
+    public class AprendizProgramBusiness
     {
         // Dependencias inyectadas
         private readonly AprendizProgramData _aprendizProgramData; // Acceso a la capa de datos

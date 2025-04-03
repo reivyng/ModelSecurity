@@ -328,7 +328,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" Nullable="false" />
           <Property Name="code_regional" Type="String" Nullable="false" />
-          <NavigationProperty Name="CenterId" Relationship="DbAutogestion.RegionalCenter" FromRole="Regional" ToRole="Center" />
+          <NavigationProperty Name="Center" Relationship="DbAutogestion.RegionalCenter" FromRole="Regional" ToRole="Center" />
         </EntityType>
         <Association Name="RegionalCenter">
           <End Type="DbAutogestion.Regional" Role="Regional" Multiplicity="1" />
