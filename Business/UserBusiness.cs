@@ -79,7 +79,7 @@ namespace Business
             try
             {
                 // Buscar el usuario en la base de datos
-                var user = await _userData.GetByidAsync(id);
+                var user = await _userData.GetByIdAsync(id);
                 if (user == null)
                 {
                     _logger.LogInformation("No se encontró ningún usuario con ID: {UserId}", id);

@@ -122,7 +122,6 @@ namespace Business
                 // Crear la entidad ChangeLog desde el DTO
                 var changeLog = new ChangeLog
                 {
-                    Id = changeLogDto.Id,
                     TableName = changeLogDto.TableName,
                     IdTable = changeLogDto.IdTable,
                     OldValues = changeLogDto.OldValues,

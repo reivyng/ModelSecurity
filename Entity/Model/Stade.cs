@@ -9,11 +9,11 @@ namespace Entity.Model
     public class Stade
     {
         public int Id { get; set; }
+        public string TypeStade { get; set; }
+        public string Description { get; set; }
         public bool Active { get; set; }
         public DateTime Create_Date { get; set; }
         public DateTime Delete_Date { get; set; }
         public DateTime Update_Date { get; set; }
-        public string Description { get; set; }
-        public string Type_Stade { get; set; }
     }
 }

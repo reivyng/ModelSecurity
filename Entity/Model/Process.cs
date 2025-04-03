@@ -11,7 +11,7 @@ namespace Entity.Model
         public int Id { get; set; }
         public string Start_Aprendiz { get; set; }
         public string Observation { get; set; }
-        public string Type_Procces { get; set; }
+        public string TypeProcess { get; set; }
         public bool Active { get; set; }
         public DateTime Create_Date { get; set; }
         public DateTime Delete_Date { get; set; }

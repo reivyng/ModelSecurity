@@ -10,10 +10,10 @@ namespace Entity.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Code_Sede { get; set; }
+        public string CodeSede { get; set; }
         public string Addres { get; set; }
-        public string Phone_Sede { get; set; }
-        public string Email_Contact { get; set; }
+        public string PhoneSede { get; set; }
+        public string EmailContact { get; set; }
         public bool Active { get; set; }
         public DateTime Create_Date { get; set; }
         public DateTime Delete_Date { get; set; }

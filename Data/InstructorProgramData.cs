@@ -31,9 +31,9 @@ namespace Data
         /// Obtiene todos los programas de instructores almacenados en la base de datos.
         /// </summary>
         /// <returns>Lista de programas de instructores.</returns>
-        public async Task<IEnumerable<InstructorProgramData>> GetAllAsync()
+        public async Task<IEnumerable<InstructorProgram>> GetAllAsync()
         {
-            return await _context.Set<InstructorProgramData>().ToListAsync();
+            return await _context.Set<InstructorProgram>().ToListAsync();
         }
 
         /// <summary>
@@ -41,11 +41,11 @@ namespace Data
         /// </summary>
         /// <param name="id">Identificador único del programa de instructor.</param>
         /// <returns>El programa de instructor con el ID especificado.</returns>
-        public async Task<InstructorProgramData?> GetByIdAsync(int id)
+        public async Task<InstructorProgram?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<InstructorProgramData>().FindAsync(id);
+                return await _context.Set<InstructorProgram>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -59,11 +59,11 @@ namespace Data
         /// </summary>
         /// <param name="instructorProgram">Instancia del programa de instructor a crear.</param>
         /// <returns>El programa de instructor creado.</returns>
-        public async Task<InstructorProgramData> CreateAsync(InstructorProgramData instructorProgram)
+        public async Task<InstructorProgram> CreateAsync(InstructorProgram instructorProgram)
         {
             try
             {
-                await _context.Set<InstructorProgramData>().AddAsync(instructorProgram);
+                await _context.Set<InstructorProgram>().AddAsync(instructorProgram);
                 await _context.SaveChangesAsync();
                 return instructorProgram;
             }
@@ -79,11 +79,11 @@ namespace Data
         /// </summary>
         /// <param name="instructorProgram">Objeto con la información actualizada.</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario.</returns>
-        public async Task<bool> UpdateAsync(InstructorProgramData instructorProgram)
+        public async Task<bool> UpdateAsync(InstructorProgram instructorProgram)
         {
             try
             {
-                _context.Set<InstructorProgramData>().Update(instructorProgram);
+                _context.Set<InstructorProgram>().Update(instructorProgram);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -103,11 +103,11 @@ namespace Data
         {
             try
             {
-                var instructorProgram = await _context.Set<InstructorProgramData>().FindAsync(id);
+                var instructorProgram = await _context.Set<InstructorProgram>().FindAsync(id);
                 if (instructorProgram == null)
                     return false;
 
-                _context.Set<InstructorProgramData>().Remove(instructorProgram);
+                _context.Set<InstructorProgram>().Remove(instructorProgram);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -119,3 +119,4 @@ namespace Data
         }
     }
 }
+    

@@ -8,18 +8,14 @@ namespace Entity.DTOautogestion
 {
     public class EnterpriseDTO
     {
-        public int Id { get; set; }
-        //public DateTime CreateDate { get; set; }
-        //public DateTime DeleteDate { get; set; }
-        //public DateTime UpdateDelete { get; set; }
+        public int Id { get; set; }      
         public string Observation { get; set; }
         public string NameBoss { get; set; }
         public string NameEnterprise { get; set; }
-        public short PhoneEnterprise { get; set; }
+        public string PhoneEnterprise { get; set; }
         public string Locate { get; set; }
         public string EmailBoss { get; set; }
-        public short NitEnterprise { get; set; }
-        //public bool Active { get; set; }
+        public string NitEnterprise { get; set; }
         public string EmailEnterprise { get; set; }
     }
 }
