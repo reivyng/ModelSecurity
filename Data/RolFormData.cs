@@ -27,16 +27,16 @@ namespace Data
         /// Obtiene todos los roles almacenados en la base de datos
         /// </summary>
         /// <returns> Lista de roles </returns>
-        public async Task<IEnumerable<RolFormData>> GetAllAsync()
+        public async Task<IEnumerable<RolForm>> GetAllAsync()
         {
-            return await _context.Set<RolFormData>().ToListAsync();
+            return await _context.Set<RolForm>().ToListAsync();
         }
 
-        public async Task<RolFormData?> GetByidAsync(int id)
+        public async Task<RolForm> GetByidAsync(int id)
         {
             try
             {
-                return await _context.Set<RolFormData>().FindAsync(id);
+                return await _context.Set<RolForm>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -51,11 +51,11 @@ namespace Data
         /// </summary>
         /// <param name="rolForm">instancia del rol a crear.</param>
         /// <returns>el rolForm creado</returns>
-        public async Task<RolFormData> CreateAsync(RolFormData rolForm)
+        public async Task<RolForm> CreateAsync(RolForm rolForm)
         {
             try
             {
-                await _context.Set<RolFormData>().AddAsync(rolForm);
+                await _context.Set<RolForm>().AddAsync(rolForm);
                 await _context.SaveChangesAsync();
                 return rolForm;
             }
@@ -71,11 +71,11 @@ namespace Data
         /// </summary>
         /// <param name="rolForm">Objeto con la infromacion actualizada</param>
         /// <returns>True si la operacion fue exitosa, False en caso contrario.</returns>
-        public async Task<bool> UpdateAsync(RolFormData rolForm)
+        public async Task<bool> UpdateAsync(RolForm rolForm)
         {
             try
             {
-                _context.Set<RolFormData>().Update(rolForm);
+                _context.Set<RolForm>().Update(rolForm);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -95,11 +95,11 @@ namespace Data
         {
             try
             {
-                var rolForm = await _context.Set<RolFormData>().FindAsync(id);
+                var rolForm = await _context.Set<RolForm>().FindAsync(id);
                 if (rolForm == null)
                     return false;
 
-                _context.Set<RolFormData>().Remove(rolForm);
+                _context.Set<RolForm>().Remove(rolForm);
                 await _context.SaveChangesAsync();
                 return true;
             }

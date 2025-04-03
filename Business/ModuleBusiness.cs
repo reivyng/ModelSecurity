@@ -31,22 +31,23 @@ namespace Business
         /// Obtiene todos los módulos del sistema y los convierte a DTOs
         /// </summary>
         /// <returns>Lista de módulos en formato DTO</returns>
-        public async Task<IEnumerable<ModuleDTOAuto>> GetAllModulesAsync()
+        public async Task<IEnumerable<ModuleDTO>> GetAllModulesAsync()
         {
             try
             {
                 // Obtener módulos de la capa de datos
                 var modules = await _moduleData.GetAllAsync();
-                var modulesDTO = new List<ModuleDTOAuto>();
+                var modulesDTO = new List<ModuleDTO>();
 
                 // Convertir cada módulo a DTO
                 foreach (var module in modules)
                 {
-                    modulesDTO.Add(new ModuleDTOAuto
+                    modulesDTO.Add(new ModuleDTO
                     {
-                        id = module.id,
-                        active = module.active
-                        
+                        Id = module.Id,
+                        Active = module.Active,
+                        Name = module.Name,
+                        Description = module.Description
                     });
                 }
 
@@ -64,7 +65,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único del módulo</param>
         /// <returns>Módulo en formato DTO</returns>
-        public async Task<ModuleDTOAuto> GetModuleByIdAsync(int id)
+        public async Task<ModuleDTO> GetModuleByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -84,11 +85,13 @@ namespace Business
                 }
 
                 // Convertir el módulo a DTO
-                return new ModuleDTOAuto
+                return new ModuleDTO
                 {
-                    id = module.id,
-                    active = module.active,
-              
+                    Id = module.Id,
+                    Active = module.Active,
+                    Name = module.Name,
+                    Description = module.Description
+
                 };
             }
             catch (Exception ex)
@@ -103,7 +106,7 @@ namespace Business
         /// </summary>
         /// <param name="moduleDto">Datos del módulo a crear</param>
         /// <returns>Módulo creado en formato DTO</returns>
-        public async Task<ModuleDTOAuto> CreateModuleAsync(ModuleDTOAuto moduleDto)
+        public async Task<ModuleDTO> CreateModuleAsync(ModuleDTO moduleDto)
         {
             try
             {
@@ -113,27 +116,26 @@ namespace Business
                 // Crear la entidad Module desde el DTO
                 var module = new Module
                 {
-                    id = moduleDto.id,
-                    name = moduleDto.name,
-                    active = moduleDto.active
-                   
+                    Active = moduleDto.Active,
+                    Name = moduleDto.Name,
+                    Description = moduleDto.Description
                 };
 
                 // Guardar el módulo en la base de datos
                 var moduleCreado = await _moduleData.CreateAsync(module);
 
                 // Convertir el módulo creado a DTO para la respuesta
-                return new ModuleDTOAuto
+                return new ModuleDTO
                 {
-                    id = moduleCreado.id,
-                    name = moduleCreado.name,
-                    active = moduleCreado.active,
-                    
+                    Id = module.Id,
+                    Active = module.Active,
+                    Name = module.Name,
+                    Description = module.Description
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo módulo: {ModuleName}", moduleDto?.name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo módulo: {ModuleName}", moduleDto?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el módulo", ex);
             }
         }
@@ -143,7 +145,7 @@ namespace Business
         /// </summary>
         /// <param name="moduleDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateModule(ModuleDTOAuto moduleDto)
+        private void ValidateModule(ModuleDTO moduleDto)
         {
             // Validar que el DTO no sea nulo
             if (moduleDto == null)
@@ -152,7 +154,7 @@ namespace Business
             }
 
             // Validar que el nombre no esté vacío
-            if (string.IsNullOrWhiteSpace(moduleDto.name))
+            if (string.IsNullOrWhiteSpace(moduleDto.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un módulo con nombre vacío");
                 throw new ValidationException("Name", "El nombre del módulo es obligatorio");

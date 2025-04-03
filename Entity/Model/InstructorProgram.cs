@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-    namespace Entity.Model
+namespace Entity.Model
 {
-    public class InstructorProgram
+    class InstructorProgram
     {
         public int Id { get; set; }
         public int InstructorId { get; set; }

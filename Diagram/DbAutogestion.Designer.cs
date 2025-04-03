@@ -1,0 +1,2 @@
+﻿// Seeing this comment implies that the code generation for file 'C:\Users\ReyvingF\OneDrive\Escritorio\ModelSecurity\ModelSecurity\Diagram\DbAutogestion.edmx'
+// failed. See the ErrorList for details.

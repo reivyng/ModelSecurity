@@ -1,5 +1,5 @@
 using Data;
-using Entity.DTOautogestion.pivote;
+using Entity.DTOautogestion;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using Utilities.Exceptions;
@@ -31,21 +31,21 @@ namespace Business
         /// Obtiene todas las relaciones form-module del sistema y las convierte a DTOs
         /// </summary>
         /// <returns>Lista de relaciones form-module en formato DTO</returns>
-        public async Task<IEnumerable<FormModuleDTOAuto>> GetAllFormModulesAsync()
+        public async Task<IEnumerable<FormModuleDTO>> GetAllFormModulesAsync()
         {
             try
             {
                 // Obtener relaciones de la capa de datos
                 var formModules = await _formModuleData.GetAllAsync();
-                var formModulesDTO = new List<FormModuleDTOAuto>();
+                var formModulesDTO = new List<FormModuleDTO>();
 
                 // Convertir cada relación a DTO
                 foreach (var formModule in formModules)
                 {
-                    formModulesDTO.Add(new FormModuleDTOAuto
+                    formModulesDTO.Add(new FormModuleDTO
                     {
                         Id = formModule.Id,
-                        StatusProcedure = formModule.status_procedure
+                        StatusProcedure = formModule.Status_Procedure
                     });
                 }
 
@@ -63,7 +63,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único de la relación</param>
         /// <returns>Relación form-module en formato DTO</returns>
-        public async Task<FormModuleDTOAuto> GetFormModuleByIdAsync(int id)
+        public async Task<FormModuleDTO> GetFormModuleByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -83,10 +83,10 @@ namespace Business
                 }
 
                 // Convertir la relación a DTO
-                return new FormModuleDTOAuto
+                return new FormModuleDTO
                 {
                     Id = formModule.Id,
-                    StatusProcedure = formModule.status_procedure
+                    StatusProcedure = formModule.Status_Procedure
                 };
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace Business
         /// </summary>
         /// <param name="formModuleDto">Datos de la relación a crear</param>
         /// <returns>Relación creada en formato DTO</returns>
-        public async Task<FormModuleDTOAuto> CreateFormModuleAsync(FormModuleDTOAuto formModuleDto)
+        public async Task<FormModuleDTO> CreateFormModuleAsync(FormModuleDTO formModuleDto)
         {
             try
             {
@@ -111,17 +111,17 @@ namespace Business
                 // Crear la entidad FormModule desde el DTO
                 var formModule = new FormModule
                 {
-                    status_procedure = formModuleDto.StatusProcedure
+                    Status_Procedure = formModuleDto.StatusProcedure
                 };
 
                 // Guardar la relación en la base de datos
                 var formModuleCreado = await _formModuleData.CreateAsync(formModule);
 
                 // Convertir la relación creada a DTO para la respuesta
-                return new FormModuleDTOAuto
+                return new FormModuleDTO
                 {
-                    Id = formModuleCreado.Id,
-                    StatusProcedure = formModuleCreado.status_procedure
+                    Id = formModule.Id,
+                    StatusProcedure = formModule.Status_Procedure
                 };
             }
             catch (Exception ex)
@@ -136,7 +136,7 @@ namespace Business
         /// </summary>
         /// <param name="formModuleDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateFormModule(FormModuleDTOAuto formModuleDto)
+        private void ValidateFormModule(FormModuleDTO formModuleDto)
         {
             // Validar que el DTO no sea nulo
             if (formModuleDto == null)

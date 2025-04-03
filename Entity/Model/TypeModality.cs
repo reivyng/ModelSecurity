@@ -9,7 +9,7 @@ namespace Entity.Model
     public class TypeModality
     {
         public int Id { get; set; }
-        public string name { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; }
     }
 }

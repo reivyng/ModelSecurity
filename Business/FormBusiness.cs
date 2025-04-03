@@ -31,22 +31,20 @@ namespace Business
         /// Obtiene todos los formularios del sistema y los convierte a DTOs
         /// </summary>
         /// <returns>Lista de formularios en formato DTO</returns>
-        public async Task<IEnumerable<FormDTOAuto>> GetAllFormsAsync()
+        public async Task<IEnumerable<FormDTO>> GetAllFormsAsync()
         {
             try
             {
                 // Obtener formularios de la capa de datos
                 var forms = await _formData.GetAllAsync();
-                var formsDTO = new List<FormDTOAuto>();
+                var formsDTO = new List<FormDTO>();
 
                 // Convertir cada formulario a DTO
                 foreach (var form in forms)
                 {
-                    formsDTO.Add(new FormDTOAuto
+                    formsDTO.Add(new FormDTO
                     {
                         Id = form.Id,
-                        Code = form.Code,
-                        Name = form.Name,
                         // Active = form.Active,
                         // CreateDate = form.CreateDate,
                         // UpdateDate = form.UpdateDate,
@@ -68,7 +66,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único del formulario</param>
         /// <returns>Formulario en formato DTO</returns>
-        public async Task<FormDTOAuto> GetFormByIdAsync(int id)
+        public async Task<FormDTO> GetFormByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -80,7 +78,7 @@ namespace Business
             try
             {
                 // Buscar el formulario en la base de datos
-                var form = await _formData.GetByIdAsync(id);
+                var form = await _formData.GetByidAsync(id);
                 if (form == null)
                 {
                     _logger.LogInformation("No se encontró ningún formulario con ID: {FormId}", id);
@@ -88,15 +86,10 @@ namespace Business
                 }
 
                 // Convertir el formulario a DTO
-                return new FormDTOAuto
+                return new FormDTO
                 {
                     Id = form.Id,
-                    Code = form.Code,
-                    Name = form.Name,
-                    Active = form.Active,
-                    CreateDate = form.CreateDate,
-                    UpdateDate = form.UpdateDate,
-                    DeleteDate = form.DeleteDate
+                    
                 };
             }
             catch (Exception ex)
@@ -111,7 +104,7 @@ namespace Business
         /// </summary>
         /// <param name="formDto">Datos del formulario a crear</param>
         /// <returns>Formulario creado en formato DTO</returns>
-        public async Task<FormDTOAuto> CreateFormAsync(FormDTOAuto formDto)
+        public async Task<FormDTO> CreateFormAsync(FormDTO formDto)
         {
             try
             {
@@ -121,30 +114,21 @@ namespace Business
                 // Crear la entidad Form desde el DTO
                 var form = new Form
                 {
-                    Code = formDto.Code,
-                    Name = formDto.Name,
-                    Active = formDto.Active,
-                    CreateDate = DateTime.Now
+                    Id = formDto.Id,
                 };
 
                 // Guardar el formulario en la base de datos
                 var formCreado = await _formData.CreateAsync(form);
 
                 // Convertir el formulario creado a DTO para la respuesta
-                return new FormDTOAuto
+                return new FormDTO
                 {
-                    Id = formCreado.Id,
-                    Code = formCreado.Code,
-                    Name = formCreado.Name,
-                    Active = formCreado.Active,
-                    CreateDate = formCreado.CreateDate,
-                    UpdateDate = formCreado.UpdateDate,
-                    DeleteDate = formCreado.DeleteDate
+                    Id = form.Id,
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo formulario: {FormName}", formDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo formulario: {FormName}", formDto.Description ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el formulario", ex);
             }
         }
@@ -154,7 +138,7 @@ namespace Business
         /// </summary>
         /// <param name="formDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateForm(FormDTOAuto formDto)
+        private void ValidateForm(FormDTO formDto)
         {
             // Validar que el DTO no sea nulo
             if (formDto == null)
@@ -162,19 +146,7 @@ namespace Business
                 throw new ValidationException("El objeto formulario no puede ser nulo");
             }
 
-            // Validar que el código no esté vacío
-            if (string.IsNullOrWhiteSpace(formDto.Code))
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un formulario con código vacío");
-                throw new ValidationException("Code", "El código del formulario es obligatorio");
-            }
-
-            // Validar que el nombre no esté vacío
-            if (string.IsNullOrWhiteSpace(formDto.Name))
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un formulario con nombre vacío");
-                throw new ValidationException("Name", "El nombre del formulario es obligatorio");
-            }
+            
         }
     }
 } 

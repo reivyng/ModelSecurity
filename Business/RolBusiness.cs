@@ -1,6 +1,5 @@
 ﻿using Data;
 using Entity.DTOautogestion;
-using Entity.DTOautogestion.pivote;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
@@ -33,23 +32,23 @@ namespace Business
         /// Obtiene todos los roles del sistema y los convierte a DTOs
         /// </summary>
         /// <returns>Lista de roles en formato DTO</returns>
-        public async Task<IEnumerable<RolDTOAuto>> GetAllRolesAsync()
+        public async Task<IEnumerable<RolDTO>> GetAllRolesAsync()
         {
             try
             {
                 // Obtener roles de la capa de datos
                 var roles = await _rolData.GetAllAsync();
-                var rolesDTO = new List<RolDTOAuto>();
+                var rolesDTO = new List<RolDTO>();
 
                 // Convertir cada rol a DTO
                 foreach (var rol in roles)
                 {
-                    rolesDTO.Add(new RolDTOAuto
+                    rolesDTO.Add(new RolDTO
                     {
-                        id = rol.Id,
-                        TypeRol = rol.type_rol,
+                        Id = rol.Id,
+                        TypeRol = rol.Type_Rol,
                         Description = rol.Description,
-                        Active = rol.active
+                        Active = rol.Active
                     });
                 }
 
@@ -67,7 +66,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único del rol</param>
         /// <returns>Rol en formato DTO</returns>
-        public async Task<RolDTOAuto> GetRolByIdAsync(int id)
+        public async Task<RolDTO> GetRolByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -87,12 +86,12 @@ namespace Business
                 }
 
                 // Convertir el rol a DTO
-                return new RolDTOAuto
+                return new RolDTO
                 {
-                    id = rol.Id,
-                    TypeRol = rol.type_rol,
+                    Id = rol.Id,
+                    TypeRol = rol.Type_Rol,
                     Description = rol.Description,
-                    Active = rol.active
+                    Active = rol.Active
                 };
             }
             catch (Exception ex)
@@ -107,7 +106,7 @@ namespace Business
         /// </summary>
         /// <param name="rolDto">Datos del rol a crear</param>
         /// <returns>Rol creado en formato DTO</returns>
-        public async Task<RolDTOAuto> CreateRolAsync(RolDTOAuto rolDto)
+        public async Task<RolDTO> CreateRolAsync(RolDTO rolDto)
         {
             try
             {
@@ -117,21 +116,21 @@ namespace Business
                 // Crear la entidad Rol desde el DTO
                 var rol = new Rol
                 {
-                    type_rol = rolDto.TypeRol,
+                    Type_Rol = rolDto.TypeRol,
                     Description = rolDto.Description,
-                    active = rolDto.Active
+                    Active = rolDto.Active
                 };
 
                 // Guardar el rol en la base de datos
                 var rolCreado = await _rolData.CreateAsync(rol);
 
                 // Convertir el rol creado a DTO para la respuesta
-                return new RolDTOAuto
+                return new RolDTO
                 {
-                    id = rolCreado.Id,
-                    TypeRol = rolCreado.type_rol,
-                    Description = rolCreado.Description,
-                    Active = rolCreado.active
+                    Id = rol.Id,
+                    TypeRol = rol.Type_Rol,
+                    Description = rol.Description,
+                    Active = rol.Active
                 };
             }
             catch (Exception ex)
@@ -146,7 +145,7 @@ namespace Business
         /// </summary>
         /// <param name="rolDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateRol(RolDTOAuto rolDto)
+        private void ValidateRol(RolDTO rolDto)
         {
             // Validar que el DTO no sea nulo
             if (rolDto == null)

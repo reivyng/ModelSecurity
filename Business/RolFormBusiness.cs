@@ -31,20 +31,20 @@ namespace Business
         /// Obtiene todas las relaciones rol-form del sistema y las convierte a DTOs
         /// </summary>
         /// <returns>Lista de relaciones rol-form en formato DTO</returns>
-        public async Task<IEnumerable<RolFormDTOAuto>> GetAllRolFormsAsync()
+        public async Task<IEnumerable<RolFormDTO>> GetAllRolFormsAsync()
         {
             try
             {
                 // Obtener relaciones de la capa de datos
                 var rolForms = await _rolFormData.GetAllAsync();
-                var rolFormsDTO = new List<RolFormDTOAuto>();
+                var rolFormsDTO = new List<RolFormDTO>();
 
                 // Convertir cada relación a DTO
                 foreach (var rolForm in rolForms)
                 {
-                    rolFormsDTO.Add(new RolFormDTOAuto
+                    rolFormsDTO.Add(new RolFormDTO
                     {
-                        id = rolForm.id,
+                        Id = rolForm.Id,
                         RolId = rolForm.RolId,
                         FormId = rolForm.FormId,
                         Permission = rolForm.Permission
@@ -66,7 +66,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único de la relación</param>
         /// <returns>Relación rol-form en formato DTO</returns>
-        public async Task<RolFormDTOAuto> GetRolFormByIdAsync(int id)
+        public async Task<RolFormDTO> GetRolFormByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -86,9 +86,9 @@ namespace Business
                 }
 
                 // Convertir la relación a DTO
-                return new RolFormDTOAuto
+                return new RolFormDTO
                 {
-                    id = rolForm.id,
+                    Id = rolForm.Id,
                     Permission = rolForm.Permission,
                     RolId = rolForm.RolId,
                     FormId = rolForm.FormId,
@@ -107,7 +107,7 @@ namespace Business
         /// </summary>
         /// <param name="rolFormDto">Datos de la relación a crear</param>
         /// <returns>Relación creada en formato DTO</returns>
-        public async Task<RolFormDTOAuto> CreateRolFormAsync(RolFormDTOAuto rolFormDto)
+        public async Task<RolFormDTO> CreateRolFormAsync(RolFormDTO rolFormDto)
         {
             try
             {
@@ -115,26 +115,23 @@ namespace Business
                 ValidateRolForm(rolFormDto);
 
                 // Crear la entidad RolForm desde el DTO
-                var rolForm = new RolFormDTOAuto
+                var rolForm = new RolForm
                 {
-                    id = rolFormDto.id,
+                    Id = rolFormDto.Id,
                     RolId = rolFormDto.RolId,
                     FormId = rolFormDto.FormId,
                     Permission = rolFormDto.Permission
-
-
                 };
 
                 // Guardar la relación en la base de datos
                 var rolFormCreado = await _rolFormData.CreateAsync(rolForm);
 
                 // Convertir la relación creada a DTO para la respuesta
-                return new RolFormDTOAuto
+                return new RolFormDTO
                 {
-                    id = rolFormCreado.Id,
-                    RolId = rolFormCreado.RolId,
-                    FormId = rolFormCreado.FormId,
-                    
+                    Id = rolForm.Id,
+                    RolId = rolForm.RolId,
+                    FormId = rolForm.FormId,                    
                 };
             }
             catch (Exception ex)
@@ -149,7 +146,7 @@ namespace Business
         /// </summary>
         /// <param name="rolFormDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateRolForm(RolFormDTOAuto rolFormDto)
+        private void ValidateRolForm(RolFormDTO rolFormDto)
         {
             // Validar que el DTO no sea nulo
             if (rolFormDto == null)

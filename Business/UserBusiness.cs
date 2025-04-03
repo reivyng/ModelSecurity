@@ -31,24 +31,25 @@ namespace Business
         /// Obtiene todos los usuarios del sistema y los convierte a DTOs
         /// </summary>
         /// <returns>Lista de usuarios en formato DTO</returns>
-        public async Task<IEnumerable<UserDTOAuto>> GetAllUsersAsync()
+        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
             try
             {
                 // Obtener usuarios de la capa de datos
                 var users = await _userData.GetAllAsync();
-                var usersDTO = new List<UserDTOAuto>();
+                var usersDTO = new List<UserDTO>();
 
                 // Convertir cada usuario a DTO
                 foreach (var user in users)
                 {
-                    usersDTO.Add(new UserDTOAuto
+                    usersDTO.Add(new UserDTO
                     {
                         Id = user.Id,
-                        Username = user.username,
-                        Email = user.email,
-                        Password = user.password,
-                        PersonId = user.PersonId
+                        Username = user.Username,
+                        Email = user.Email,
+                        Active = user.Active,
+                        PersonId = user.PersonId,
+                        Password = user.Password
                     });
                 }
 
@@ -66,7 +67,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único del usuario</param>
         /// <returns>Usuario en formato DTO</returns>
-        public async Task<UserDTOAuto> GetUserByIdAsync(int id)
+        public async Task<UserDTO> GetUserByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -86,13 +87,14 @@ namespace Business
                 }
 
                 // Convertir el usuario a DTO
-                return new UserDTOAuto
+                return new UserDTO
                 {
                     Id = user.Id,
-                    Username = user.username,
-                    Email = user.email,
-                    Password = user.password,
-                    PersonId = user.PersonId
+                    Username = user.Username,
+                    Email = user.Email,
+                    Active = user.Active,
+                    PersonId = user.PersonId,
+                    Password = user.Password
                 };
             }
             catch (Exception ex)
@@ -107,7 +109,7 @@ namespace Business
         /// </summary>
         /// <param name="userDto">Datos del usuario a crear</param>
         /// <returns>Usuario creado en formato DTO</returns>
-        public async Task<UserDTOAuto> CreateUserAsync(UserDTOAuto userDto)
+        public async Task<UserDTO> CreateUserAsync(UserDTO userDto)
         {
             try
             {
@@ -117,23 +119,25 @@ namespace Business
                 // Crear la entidad User desde el DTO
                 var user = new User
                 {
-                    username = userDto.Username,
-                    email = userDto.Email,
-                    password = userDto.Password,
-                    PersonId = userDto.PersonId
+                    Username = userDto.Username,
+                    Email = userDto.Email,
+                    Active = userDto.Active,
+                    PersonId = userDto.PersonId,
+                    Password = userDto.Password
                 };
 
                 // Guardar el usuario en la base de datos
                 var userCreado = await _userData.CreateAsync(user);
 
                 // Convertir el usuario creado a DTO para la respuesta
-                return new UserDTOAuto
+                return new UserDTO
                 {
-                    Id = userCreado.Id,
-                    Username = userCreado.username,
-                    Email = userCreado.email,
-                    Password = userCreado.password,
-                    PersonId = userCreado.PersonId
+                    Id = user.Id,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Active = user.Active,
+                    PersonId = user.PersonId,
+                    Password = user.Password
                 };
             }
             catch (Exception ex)
@@ -148,7 +152,7 @@ namespace Business
         /// </summary>
         /// <param name="userDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateUser(UserDTOAuto userDto)
+        private void ValidateUser(UserDTO userDto)
         {
             // Validar que el DTO no sea nulo
             if (userDto == null)

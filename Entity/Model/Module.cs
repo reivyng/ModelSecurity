@@ -8,11 +8,12 @@ namespace Entity.Model
 {
     public class Module
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public bool active { get; set; }
-        public DateTime create_date { get; set; }
-        public DateTime delete_date { get; set; }
-        public DateTime update_date { get; set; }
+        public int Id { get; set; }
+        public bool Active { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime Create_Date { get; set; }
+        public DateTime Delete_Date { get; set; }
+        public DateTime Update_Date { get; set; }
     }
 }

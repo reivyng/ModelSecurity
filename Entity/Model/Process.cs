@@ -9,12 +9,12 @@ namespace Entity.Model
     public class Process
     {
         public int Id { get; set; }
-        public string start_aprendiz { get; set; }
-        public string observation { get; set; }
-        public string type_procces { get; set; }
-        public bool active { get; set; }
-        public DateTime create_date { get; set; }
-        public DateTime delete_date { get; set; }
-        public DateTime update_date { get; set; }
+        public string Start_Aprendiz { get; set; }
+        public string Observation { get; set; }
+        public string Type_Procces { get; set; }
+        public bool Active { get; set; }
+        public DateTime Create_Date { get; set; }
+        public DateTime Delete_Date { get; set; }
+        public DateTime Update_Date { get; set; }
     }
 }
