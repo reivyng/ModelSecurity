@@ -8,46 +8,35 @@ using Utilities.Exceptions;
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con las modalidades.
-    /// Implementa la lógica de negocio para la gestión de modalidades, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con los tipos de modalidades en el sistema.
     /// </summary>
     public class TypeModalityBusiness
     {
-        // Dependencias inyectadas
-        private readonly TypeModalityData _typeModalityData; // Acceso a la capa de datos
-        private readonly ILogger _logger;                   // Servicio de logging
+        private readonly TypeModalityData _typeModalityData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="typeModalityData">Servicio de acceso a datos para modalidades</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public TypeModalityBusiness(TypeModalityData typeModalityData, ILogger logger)
         {
             _typeModalityData = typeModalityData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todas las modalidades del sistema y las convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de modalidades en formato DTO</returns>
-        public async Task<IEnumerable<TypeModalityDTO>> GetAllTypeModalitiesAsync()
+        // Método para obtener todas las modalidades como DTOs
+        public async Task<IEnumerable<TypeModalityDto>> GetAllTypeModalitiesAsync()
         {
             try
             {
-                // Obtener modalidades de la capa de datos
                 var typeModalities = await _typeModalityData.GetAllAsync();
-                var typeModalitiesDTO = new List<TypeModalityDTO>();
+                var typeModalitiesDTO = new List<TypeModalityDto>();
 
-                // Convertir cada modalidad a DTO
                 foreach (var typeModality in typeModalities)
                 {
-                    typeModalitiesDTO.Add(new TypeModalityDTO
+                    typeModalitiesDTO.Add(new TypeModalityDto
                     {
                         Id = typeModality.Id,
                         Name = typeModality.Name,
-                        Description = typeModality.Description
+                        Description = typeModality.Description,
+                        Active = typeModality.Active // si existe la entidad
                     });
                 }
 
@@ -60,96 +49,78 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Obtiene una modalidad específica por su ID
-        /// </summary>
-        /// <param name="id">Identificador único de la modalidad</param>
-        /// <returns>Modalidad en formato DTO</returns>
-        public async Task<TypeModalityDTO> GetTypeModalityByIdAsync(int id)
+        // Método para obtener una modalidad por ID como DTO
+        public async Task<TypeModalityDto> GetTypeModalityByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener una modalidad con ID inválido: {TypeModalityId}", id);
+                _logger.LogWarning("Se intentó obtener una modalidad con ID inválido: {Id}", id);
                 throw new Utilities.Exceptions.ValidationException("id", "El ID de la modalidad debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar la modalidad en la base de datos
                 var typeModality = await _typeModalityData.GetByIdAsync(id);
                 if (typeModality == null)
                 {
-                    _logger.LogInformation("No se encontró ninguna modalidad con ID: {TypeModalityId}", id);
-                    throw new EntityNotFoundException("TypeModality", id);
+                    _logger.LogInformation("No se encontró ninguna modalidad con ID: {Id}", id);
+                    throw new EntityNotFoundException("typeModality", id);
                 }
 
-                // Convertir la modalidad a DTO
-                return new TypeModalityDTO
+                return new TypeModalityDto
                 {
                     Id = typeModality.Id,
                     Name = typeModality.Name,
-                    Description = typeModality.Description
+                    Description = typeModality.Description,
+                    Active = typeModality.Active // si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener la modalidad con ID: {TypeModalityId}", id);
+                _logger.LogError(ex, "Error al obtener la modalidad con ID: {Id}", id);
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar la modalidad con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea una nueva modalidad en el sistema
-        /// </summary>
-        /// <param name="typeModalityDto">Datos de la modalidad a crear</param>
-        /// <returns>Modalidad creada en formato DTO</returns>
-        public async Task<TypeModalityDTO> CreateTypeModalityAsync(TypeModalityDTO typeModalityDto)
+        // Método para crear una modalidad desde un DTO
+        public async Task<TypeModalityDto> CreateTypeModalityAsync(TypeModalityDto typeModalityDto)
         {
             try
             {
-                // Validar los datos del DTO
                 ValidateTypeModality(typeModalityDto);
 
-                // Crear la entidad TypeModality desde el DTO
                 var typeModality = new TypeModality
                 {
                     Name = typeModalityDto.Name,
-                    Description = typeModalityDto.Description
+                    Description = typeModalityDto.Description,
+                    Active = typeModalityDto.Active // si existe la entidad
                 };
 
-                // Guardar la modalidad en la base de datos
-                var typeModalityCreada = await _typeModalityData.CreateAsync(typeModality);
+                var typeModalityCreado = await _typeModalityData.CreateAsync(typeModality);
 
-                // Convertir la modalidad creada a DTO para la respuesta
-                return new TypeModalityDTO
+                return new TypeModalityDto
                 {
-                    Id = typeModalityCreada.Id,
-                    Name = typeModalityCreada.Name,
-                    Description = typeModalityCreada.Description
+                    Id = typeModality.Id,
+                    Name = typeModality.Name,
+                    Description = typeModality.Description,
+                    Active = typeModality.Active // si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nueva modalidad: {TypeModalityName}", typeModalityDto?.Name ?? "null");
+                _logger.LogError(ex, "Error al crear nueva modalidad: {Name}", typeModalityDto?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear la modalidad", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de modalidad
-        /// </summary>
-        /// <param name="typeModalityDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateTypeModality(TypeModalityDTO typeModalityDto)
+        // Método para validar el DTO
+        private void ValidateTypeModality(TypeModalityDto typeModalityDto)
         {
-            // Validar que el DTO no sea nulo
             if (typeModalityDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto modalidad no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto TypeModality no puede ser nulo");
             }
 
-            // Validar que el Name no esté vacío
             if (string.IsNullOrWhiteSpace(typeModalityDto.Name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar una modalidad con Name vacío");
@@ -158,9 +129,3 @@ namespace Business
         }
     }
 }
-
-
-
-
-
-

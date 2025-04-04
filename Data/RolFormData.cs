@@ -32,7 +32,7 @@ namespace Data
             return await _context.Set<RolForm>().ToListAsync();
         }
 
-        public async Task<RolForm> GetByidAsync(int id)
+        public async Task<RolForm> GetByIdAsync(int id)
         {
             try
             {

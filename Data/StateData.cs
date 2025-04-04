@@ -11,7 +11,7 @@ namespace Data
     /// <summary>
     /// Repository encargado de la gestión de la entidad Stade en la base de datos.
     /// </summary>
-    public class StadeData
+    public class StateData
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -21,7 +21,7 @@ namespace Data
         /// </summary>
         /// <param name="context">Instancia de <see cref="ApplicationDbContext"/> para la conexión con la base de datos.</param>
         /// <param name="logger">Instancia de <see cref="ILogger"/> para el registro de logs.</param>
-        public StadeData(ApplicationDbContext context, ILogger logger)
+        public StateData(ApplicationDbContext context, ILogger logger)
         {
             _context = context;
             _logger = logger;

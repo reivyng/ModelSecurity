@@ -1,57 +1,44 @@
-using Data;
+﻿using Data;
 using Entity.DTOautogestion;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los usuarios.
-    /// Implementa la lógica de negocio para la gestión de usuarios.
+    /// Clase de negocio encargada de la lógica relacionada con los usuarios del sistema.
     /// </summary>
     public class UserBusiness
     {
-        // Dependencias inyectadas
-        private readonly UserData _userData;        // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly UserData _userData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="userData">Servicio de acceso a datos para usuarios</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public UserBusiness(UserData userData, ILogger logger)
         {
             _userData = userData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los usuarios del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de usuarios en formato DTO</returns>
-        public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
+        // Método para obtener todos los usuarios como DTOs
+        public async Task<IEnumerable<UserDto>> GetAllUsersAsync()
         {
             try
             {
-                // Obtener usuarios de la capa de datos
                 var users = await _userData.GetAllAsync();
-                var usersDTO = new List<UserDTO>();
+                var usersDTO = new List<UserDto>();
 
-                // Convertir cada usuario a DTO
                 foreach (var user in users)
                 {
-                    usersDTO.Add(new UserDTO
+                    usersDTO.Add(new UserDto
                     {
                         Id = user.Id,
                         Username = user.Username,
                         Email = user.Email,
-                        Active = user.Active,
-                        PersonId = user.PersonId,
-                        Password = user.Password
-                    });
-                }
+                        Active = user.Active //si existe la entidad
+                     });
+                    }
 
                 return usersDTO;
             }
@@ -62,23 +49,17 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Obtiene un usuario específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del usuario</param>
-        /// <returns>Usuario en formato DTO</returns>
-        public async Task<UserDTO> GetUserByIdAsync(int id)
+        // Método para obtener un usuario por ID como DTO
+        public async Task<UserDto> GetUserByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó obtener un usuario con ID inválido: {UserId}", id);
-                throw new ValidationException("id", "El ID del usuario debe ser mayor que cero");
+                throw new Utilities.Exceptions.ValidationException("id", "El ID del usuario debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el usuario en la base de datos
                 var user = await _userData.GetByIdAsync(id);
                 if (user == null)
                 {
@@ -86,15 +67,12 @@ namespace Business
                     throw new EntityNotFoundException("User", id);
                 }
 
-                // Convertir el usuario a DTO
-                return new UserDTO
+                return new UserDto
                 {
                     Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
-                    Active = user.Active,
-                    PersonId = user.PersonId,
-                    Password = user.Password
+                    Active = user.Active //si existe la entidad
                 };
             }
             catch (Exception ex)
@@ -104,89 +82,56 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo usuario en el sistema
-        /// </summary>
-        /// <param name="userDto">Datos del usuario a crear</param>
-        /// <returns>Usuario creado en formato DTO</returns>
-        public async Task<UserDTO> CreateUserAsync(UserDTO userDto)
+        // Método para crear un usuario desde un DTO
+        public async Task<UserDto> CreateUserAsync(UserDto userDto)
         {
             try
             {
-                // Validar los datos del DTO
                 ValidateUser(userDto);
 
-                // Crear la entidad User desde el DTO
                 var user = new User
                 {
                     Username = userDto.Username,
                     Email = userDto.Email,
-                    Active = userDto.Active,
-                    PersonId = userDto.PersonId,
-                    Password = userDto.Password
+                    Active = userDto.Active //si existe la entidad
                 };
 
-                // Guardar el usuario en la base de datos
                 var userCreado = await _userData.CreateAsync(user);
 
-                // Convertir el usuario creado a DTO para la respuesta
-                return new UserDTO
+                return new UserDto
                 {
                     Id = user.Id,
                     Username = user.Username,
                     Email = user.Email,
-                    Active = user.Active,
-                    PersonId = user.PersonId,
-                    Password = user.Password
+                    Active = user.Active //si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo usuario");
+                _logger.LogError(ex, "Error al crear nuevo usuario: {UserName}", userDto?.Username ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el usuario", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de usuario
-        /// </summary>
-        /// <param name="userDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateUser(UserDTO userDto)
+        // Método para validar el DTO
+        private void ValidateUser(UserDto userDto)
         {
-            // Validar que el DTO no sea nulo
             if (userDto == null)
             {
-                throw new ValidationException("El objeto usuario no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto usuario no puede ser nulo");
             }
 
-            // Validar que el username no sea nulo o vacío
-            if (string.IsNullOrEmpty(userDto.Username))
+            if (string.IsNullOrWhiteSpace(userDto.Username))
             {
-                _logger.LogWarning("Se intentó crear/actualizar un usuario con username inválido");
-                throw new ValidationException("Username", "El nombre de usuario no puede estar vacío");
+                _logger.LogWarning("Se intentó crear/actualizar un usuario con Name vacío");
+                throw new Utilities.Exceptions.ValidationException("Name", "El Name del usuario es obligatorio");
             }
 
-            // Validar que el email no sea nulo o vacío
-            if (string.IsNullOrEmpty(userDto.Email))
+            if (string.IsNullOrWhiteSpace(userDto.Email))
             {
-                _logger.LogWarning("Se intentó crear/actualizar un usuario con email inválido");
-                throw new ValidationException("Email", "El email no puede estar vacío");
-            }
-
-            // Validar que el password no sea nulo o vacío
-            if (string.IsNullOrEmpty(userDto.Password))
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un usuario con password inválido");
-                throw new ValidationException("Password", "La contraseña no puede estar vacía");
-            }
-
-            // Validar que el PersonId sea válido
-            if (userDto.PersonId <= 0)
-            {
-                _logger.LogWarning("Se intentó crear/actualizar un usuario con PersonId inválido: {PersonId}", userDto.PersonId);
-                throw new ValidationException("PersonId", "El ID de la persona debe ser mayor que cero");
+                _logger.LogWarning("Se intentó crear/actualizar un usuario con Email vacío");
+                throw new Utilities.Exceptions.ValidationException("Email", "El Email del usuario es obligatorio");
             }
         }
     }
-} 
+}

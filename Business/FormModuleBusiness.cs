@@ -1,51 +1,43 @@
-using Data;
+﻿using Data;
 using Entity.DTOautogestion;
+using Entity.DTOautogestion.pivote;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con la relación entre formularios y módulos.
-    /// Implementa la lógica de negocio para la gestión de las relaciones entre formularios y módulos.
+    /// Clase de negocio encargada de la lógica relacionada con los módulos de formulario en el sistema.
     /// </summary>
     public class FormModuleBusiness
     {
-        // Dependencias inyectadas
-        private readonly FormModuleData _formModuleData;        // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly FormModuleData _formModuleData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="formModuleData">Servicio de acceso a datos para la relación form-module</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public FormModuleBusiness(FormModuleData formModuleData, ILogger logger)
         {
             _formModuleData = formModuleData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todas las relaciones form-module del sistema y las convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de relaciones form-module en formato DTO</returns>
-        public async Task<IEnumerable<FormModuleDTO>> GetAllFormModulesAsync()
+        // Método para obtener todos los módulos de formulario como DTOs
+        public async Task<IEnumerable<FormModuleDto>> GetAllFormModulesAsync()
         {
             try
             {
-                // Obtener relaciones de la capa de datos
                 var formModules = await _formModuleData.GetAllAsync();
-                var formModulesDTO = new List<FormModuleDTO>();
+                var formModulesDTO = new List<FormModuleDto>();
 
-                // Convertir cada relación a DTO
                 foreach (var formModule in formModules)
                 {
-                    formModulesDTO.Add(new FormModuleDTO
+                    formModulesDTO.Add(new FormModuleDto
                     {
                         Id = formModule.Id,
-                        StatusProcedure = formModule.StatusProcedure
+                        StatusProcedure = formModule.StatusProcedure,
+                        FormId = formModule.FormId,
+                        ModuleId = formModule.ModuleId
                     });
                 }
 
@@ -53,103 +45,88 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todas las relaciones form-module");
-                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de relaciones form-module", ex);
+                _logger.LogError(ex, "Error al obtener todos los módulos de formulario");
+                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de módulos de formulario", ex);
             }
         }
 
-        /// <summary>
-        /// Obtiene una relación form-module específica por su ID
-        /// </summary>
-        /// <param name="id">Identificador único de la relación</param>
-        /// <returns>Relación form-module en formato DTO</returns>
-        public async Task<FormModuleDTO> GetFormModuleByIdAsync(int id)
+        // Método para obtener un módulo de formulario por ID como DTO
+        public async Task<FormModuleDto> GetFormModuleByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener una relación form-module con ID inválido: {FormModuleId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la relación debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener un módulo de formulario con ID inválido: {FormModuleId}", id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID del módulo de formulario debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar la relación en la base de datos
                 var formModule = await _formModuleData.GetByIdAsync(id);
                 if (formModule == null)
                 {
-                    _logger.LogInformation("No se encontró ninguna relación form-module con ID: {FormModuleId}", id);
+                    _logger.LogInformation("No se encontró ningún módulo de formulario con ID: {FormModuleId}", id);
                     throw new EntityNotFoundException("FormModule", id);
                 }
 
-                // Convertir la relación a DTO
-                return new FormModuleDTO
+                return new FormModuleDto
                 {
                     Id = formModule.Id,
-                    StatusProcedure = formModule.StatusProcedure
+                    StatusProcedure = formModule.StatusProcedure,
+                    FormId = formModule.FormId,
+                    ModuleId = formModule.ModuleId
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener la relación form-module con ID: {FormModuleId}", id);
-                throw new ExternalServiceException("Base de datos", $"Error al recuperar la relación form-module con ID {id}", ex);
+                _logger.LogError(ex, "Error al obtener el módulo de formulario con ID: {FormModuleId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al recuperar el módulo de formulario con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea una nueva relación form-module en el sistema
-        /// </summary>
-        /// <param name="formModuleDto">Datos de la relación a crear</param>
-        /// <returns>Relación creada en formato DTO</returns>
-        public async Task<FormModuleDTO> CreateFormModuleAsync(FormModuleDTO formModuleDto)
+        // Método para crear un módulo de formulario desde un DTO
+        public async Task<FormModuleDto> CreateFormModuleAsync(FormModuleDto formModuleDto)
         {
             try
             {
-                // Validar los datos del DTO
                 ValidateFormModule(formModuleDto);
 
-                // Crear la entidad FormModule desde el DTO
                 var formModule = new FormModule
                 {
-                    StatusProcedure = formModuleDto.StatusProcedure
+                    StatusProcedure = formModuleDto.StatusProcedure,
+                    FormId = formModuleDto.FormId,
+                    ModuleId = formModuleDto.ModuleId
                 };
 
-                // Guardar la relación en la base de datos
                 var formModuleCreado = await _formModuleData.CreateAsync(formModule);
 
-                // Convertir la relación creada a DTO para la respuesta
-                return new FormModuleDTO
+                return new FormModuleDto
                 {
                     Id = formModule.Id,
-                    StatusProcedure = formModule.StatusProcedure
+                    StatusProcedure = formModule.StatusProcedure,
+                    FormId = formModule.FormId,
+                    ModuleId = formModule.ModuleId
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nueva relación form-module");
-                throw new ExternalServiceException("Base de datos", "Error al crear la relación form-module", ex);
+                _logger.LogError(ex, "Error al crear nuevo módulo de formulario");
+                throw new ExternalServiceException("Base de datos", "Error al crear el módulo de formulario", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de relación form-module
-        /// </summary>
-        /// <param name="formModuleDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateFormModule(FormModuleDTO formModuleDto)
+        // Método para validar el DTO
+        private void ValidateFormModule(FormModuleDto formModuleDto)
         {
-            // Validar que el DTO no sea nulo
             if (formModuleDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto relación form-module no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto módulo de formulario no puede ser nulo");
             }
 
-            // Validar que el StatusProcedure no esté vacío
-            if (string.IsNullOrWhiteSpace(formModuleDto.StatusProcedure))
+            if (formModuleDto.FormId <= 0 || formModuleDto.ModuleId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar una relación con StatusProcedure vacío");
-                throw new Utilities.Exceptions.ValidationException("StatusProcedure", "El StatusProcedure es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar un módulo de formulario con FormId o ModuleId inválidos");
+                throw new Utilities.Exceptions.ValidationException("FormId/ModuleId", "El FormId y el ModuleId del módulo de formulario son obligatorios y deben ser mayores que cero");
             }
         }
     }
-} 
+}

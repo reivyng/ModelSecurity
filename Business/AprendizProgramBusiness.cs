@@ -1,148 +1,123 @@
 ﻿using Data;
 using Entity.DTOautogestion;
+using Entity.DTOautogestion.pivote;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los programas de aprendices.
-    /// Implementa la lógica de negocio para la gestión de programas de aprendices, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con los programas de aprendizaje en el sistema.
     /// </summary>
     public class AprendizProgramBusiness
     {
-        // Dependencias inyectadas
-        private readonly AprendizProgramData _aprendizProgramData; // Acceso a la capa de datos
-        private readonly ILogger _logger;                         // Servicio de logging
+        private readonly AprendizProgramData _aprendizProgramData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="aprendizProgramData">Servicio de acceso a datos para programas de aprendices</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public AprendizProgramBusiness(AprendizProgramData aprendizProgramData, ILogger logger)
         {
             _aprendizProgramData = aprendizProgramData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los programas de aprendices del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de programas de aprendices en formato DTO</returns>
-        public async Task<IEnumerable<AprendizProgramDTO>> GetAllAprendizProgramsAsync()
+        // Método para obtener todos los programas de aprendizaje como DTOs
+        public async Task<IEnumerable<AprendizProgramDto>> GetAllAprendizProgramsAsync()
         {
             try
             {
-                // Obtener programas de aprendices de la capa de datos
-                var aprendizPrograms = await _aprendizProgramData.GetAllAsync();
-                var aprendizProgramsDTO = new List<AprendizProgramDTO>();
+                var programs = await _aprendizProgramData.GetAllAsync();
+                var programsDTO = new List<AprendizProgramDto>();
 
-                // Convertir cada programa de aprendiz a DTO
-                foreach (var aprendizProgram in aprendizPrograms)
+                foreach (var program in programs)
                 {
-                    aprendizProgramsDTO.Add(new AprendizProgramDTO
+                    programsDTO.Add(new AprendizProgramDto
                     {
-                        Id = aprendizProgram.Id,
-                        AprendizId = aprendizProgram.AprendizId,
-                        ProgramId = aprendizProgram.ProgramId
+                        id = program.id,
+                        aprendizId = program.id,
+                        programId = program.id,
                     });
                 }
 
-                return aprendizProgramsDTO;
+                return programsDTO;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todos los programas de aprendices");
-                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de programas de aprendices", ex);
+                _logger.LogError(ex, "Error al obtener todos los programas de aprendizaje");
+                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de programas de aprendizaje", ex);
             }
         }
 
-        /// <summary>
-        /// Obtiene un programa de aprendiz específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del programa de aprendiz</param>
-        /// <returns>Programa de aprendiz en formato DTO</returns>
-        public async Task<AprendizProgramDTO> GetAprendizProgramByIdAsync(int id)
+        // Método para obtener un programa de aprendizaje por ID como DTO
+        public async Task<AprendizProgramDto> GetAprendizProgramByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un programa de aprendiz con ID inválido: {AprendizProgramId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del programa de aprendiz debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener un programa de aprendizaje con ID inválido: {Id}", id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID del programa de aprendizaje debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el programa de aprendiz en la base de datos
-                var aprendizProgram = await _aprendizProgramData.GetByIdAsync(id);
-                if (aprendizProgram == null)
+                var program = await _aprendizProgramData.GetByIdAsync(id);
+                if (program == null)
                 {
-                    _logger.LogInformation("No se encontró ningún programa de aprendiz con ID: {AprendizProgramId}", id);
-                    throw new EntityNotFoundException("AprendizProgram", id);
+                    _logger.LogInformation("No se encontró ningún programa de aprendizaje con ID: {Id}", id);
+                    throw new EntityNotFoundException("aprendizProgram", id);
                 }
 
-                // Convertir el programa de aprendiz a DTO
-                return new AprendizProgramDTO
+                return new AprendizProgramDto
                 {
-                    Id = aprendizProgram.Id,
-                    AprendizId = aprendizProgram.AprendizId,
-                    ProgramId = aprendizProgram.ProgramId
+                    id = program.id,
+                    aprendizId = program.id,
+                    programId = program.id,
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el programa de aprendiz con ID: {AprendizProgramId}", id);
-                throw new ExternalServiceException("Base de datos", $"Error al recuperar el programa de aprendiz con ID {id}", ex);
+                _logger.LogError(ex, "Error al obtener el programa de aprendizaje con ID: {Id}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al recuperar el programa de aprendizaje con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo programa de aprendiz en el sistema
-        /// </summary>
-        /// <param name="aprendizProgramDto">Datos del programa de aprendiz a crear</param>
-        /// <returns>Programa de aprendiz creado en formato DTO</returns>
-        public async Task<AprendizProgramDTO> CreateAprendizProgramAsync(AprendizProgramDTO aprendizProgramDto)
+        // Método para crear un programa de aprendizaje desde un DTO
+        public async Task<AprendizProgramDto> CreateAprendizProgramAsync(AprendizProgramDto aprendizProgramDto)
         {
-           
-                // Validar los datos del DTO
+            try
+            {
                 ValidateAprendizProgram(aprendizProgramDto);
 
-                // Crear la entidad AprendizProgram desde el DTO
-                var aprendizProgram = new AprendizProgram
+                var program = new AprendizProgram
                 {
-                    AprendizId = aprendizProgramDto.AprendizId,
-                    ProgramId = aprendizProgramDto.ProgramId
+                    aprendizId = aprendizProgramDto.id,
+                    programId = aprendizProgramDto.id,
                 };
 
-                // Guardar el programa de aprendiz en la base de datos
-                var aprendizProgramCreado = await _aprendizProgramData.CreateAsync(aprendizProgram);
+                var programCreado = await _aprendizProgramData.CreateAsync(program);
 
-                // Convertir el programa de aprendiz creado a DTO para la respuesta
-                return new AprendizProgramDTO
+                return new AprendizProgramDto
                 {
-                    Id = aprendizProgram.Id,
-                    AprendizId = aprendizProgram.AprendizId,
-                    ProgramId = aprendizProgram.ProgramId
+                    id = program.id,
+                    aprendizId = program.id,
+                    programId = program.id,
                 };
-            
-            
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear nuevo programa de aprendizaje");
+                throw new ExternalServiceException("Base de datos", "Error al crear el programa de aprendizaje", ex);
+            }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de programa de aprendiz
-        /// </summary>
-        /// <param name="aprendizProgramDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateAprendizProgram(AprendizProgramDTO aprendizProgramDto)
+        // Método para validar el DTO
+        private void ValidateAprendizProgram(AprendizProgramDto aprendizProgramDto)
         {
-            // Validar que el DTO no sea nulo
             if (aprendizProgramDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto programa de aprendiz no puede ser nulo");
-            } 
+                throw new Utilities.Exceptions.ValidationException("El objeto AprendizProgram no puede ser nulo");
+            }
+
+           
         }
     }
 }

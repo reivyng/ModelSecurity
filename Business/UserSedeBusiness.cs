@@ -1,4 +1,5 @@
 ﻿using Data;
+using Entity.DTOautogestion;
 using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
@@ -8,47 +9,35 @@ using Utilities.Exceptions;
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los registros de UserSede.
-    /// Implementa la lógica de negocio para la gestión de registros de UserSede, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con las sedes de usuario en el sistema.
     /// </summary>
     public class UserSedeBusiness
     {
-        // Dependencias inyectadas
-        private readonly UserSedeData _userSedeData; // Acceso a la capa de datos
-        private readonly ILogger _logger;           // Servicio de logging
+        private readonly UserSedeData _userSedeData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="userSedeData">Servicio de acceso a datos para registros de UserSede</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public UserSedeBusiness(UserSedeData userSedeData, ILogger logger)
         {
             _userSedeData = userSedeData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los registros de UserSede del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de registros de UserSede en formato DTO</returns>
-        public async Task<IEnumerable<UserSedeDTO>> GetAllUserSedesAsync()
+        // Método para obtener todas las sedes de usuario como DTOs
+        public async Task<IEnumerable<UserSedeDto>> GetAllUserSedesAsync()
         {
             try
             {
-                // Obtener registros de UserSede de la capa de datos
                 var userSedes = await _userSedeData.GetAllAsync();
-                var userSedesDTO = new List<UserSedeDTO>();
+                var userSedesDTO = new List<UserSedeDto>();
 
-                // Convertir cada registro de UserSede a DTO
                 foreach (var userSede in userSedes)
                 {
-                    userSedesDTO.Add(new UserSedeDTO
+                    userSedesDTO.Add(new UserSedeDto
                     {
                         Id = userSede.Id,
-                        status_procedure = userSede.status_procedure,
                         UserId = userSede.UserId,
-                        SedeId = userSede.SedeId
+                        SedeId = userSede.SedeId,
+                        StatusProcedure = userSede.StatusProcedure
                     });
                 }
 
@@ -56,117 +45,94 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todos los registros de UserSede");
-                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de registros de UserSede", ex);
+                _logger.LogError(ex, "Error al obtener todas las sedes de usuario");
+                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de sedes de usuario", ex);
             }
         }
 
-        /// <summary>
-        /// Obtiene un registro de UserSede específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del registro de UserSede</param>
-        /// <returns>Registro de UserSede en formato DTO</returns>
-        public async Task<UserSedeDTO> GetUserSedeByIdAsync(int id)
+        // Método para obtener una sede de usuario por ID como DTO
+        public async Task<UserSedeDto> GetUserSedeByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un registro de UserSede con ID inválido: {UserSedeId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del registro de UserSede debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener una sede de usuario con ID inválido: {Id}", id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID de la sede de usuario debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el registro de UserSede en la base de datos
                 var userSede = await _userSedeData.GetByIdAsync(id);
                 if (userSede == null)
                 {
-                    _logger.LogInformation("No se encontró ningún registro de UserSede con ID: {UserSedeId}", id);
-                    throw new EntityNotFoundException("UserSede", id);
+                    _logger.LogInformation("No se encontró ninguna sede de usuario con ID: {Id}", id);
+                    throw new EntityNotFoundException("userSede", id);
                 }
 
-                // Convertir el registro de UserSede a DTO
-                return new UserSedeDTO
+                return new UserSedeDto
                 {
                     Id = userSede.Id,
-                    status_procedure = userSede.status_procedure,
                     UserId = userSede.UserId,
-                    SedeId = userSede.SedeId
+                    SedeId = userSede.SedeId,
+                    StatusProcedure = userSede.StatusProcedure
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el registro de UserSede con ID: {UserSedeId}", id);
-                throw new ExternalServiceException("Base de datos", $"Error al recuperar el registro de UserSede con ID {id}", ex);
+                _logger.LogError(ex, "Error al obtener la sede de usuario con ID: {Id}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al recuperar la sede de usuario con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo registro de UserSede en el sistema
-        /// </summary>
-        /// <param name="userSedeDto">Datos del registro de UserSede a crear</param>
-        /// <returns>Registro de UserSede creado en formato DTO</returns>
-        public async Task<UserSedeDTO> CreateUserSedeAsync(UserSedeDTO userSedeDto)
+        // Método para crear una sede de usuario desde un DTO
+        public async Task<UserSedeDto> CreateUserSedeAsync(UserSedeDto userSedeDto)
         {
-            
-                // Validar los datos del DTO
+            try
+            {
                 ValidateUserSede(userSedeDto);
 
-                // Crear la entidad UserSede desde el DTO
                 var userSede = new UserSede
                 {
-                    status_procedure = userSedeDto.status_procedure,
                     UserId = userSedeDto.UserId,
-                    SedeId = userSedeDto.SedeId
+                    SedeId = userSedeDto.SedeId,
+                    StatusProcedure = userSedeDto.StatusProcedure
                 };
 
-                // Guardar el registro de UserSede en la base de datos
                 var userSedeCreado = await _userSedeData.CreateAsync(userSede);
 
-                // Convertir el registro de UserSede creado a DTO para la respuesta
-                return new UserSedeDTO
+                return new UserSedeDto
                 {
-                    Id = userSedeCreado.Id,
-                    status_procedure = userSedeCreado.status_procedure,
-                    UserId = userSedeCreado.UserId,
-                    SedeId = userSedeCreado.SedeId
+                    Id = userSede.Id,
+                    UserId = userSede.UserId,
+                    SedeId = userSede.SedeId,
+                    StatusProcedure = userSede.StatusProcedure
                 };
-            
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear nueva sede de usuario: {UserId}", userSedeDto?.UserId ?? 0);
+                throw new ExternalServiceException("Base de datos", "Error al crear la sede de usuario", ex);
+            }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de registro de UserSede
-        /// </summary>
-        /// <param name="userSedeDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateUserSede(UserSedeDTO userSedeDto)
+        // Método para validar el DTO
+        private void ValidateUserSede(UserSedeDto userSedeDto)
         {
-            // Validar que el DTO no sea nulo
             if (userSedeDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto registro de UserSede no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto UserSede no puede ser nulo");
             }
 
-            // Validar que el UserId no esté vacío
             if (userSedeDto.UserId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar un registro de UserSede con UserId inválido");
-                throw new Utilities.Exceptions.ValidationException("UserId", "El UserId del registro de UserSede es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar una sede de usuario con UserId inválido");
+                throw new Utilities.Exceptions.ValidationException("UserId", "El UserId de la sede de usuario es obligatorio y debe ser mayor a cero");
             }
 
-            // Validar que el SedeId no esté vacío
             if (userSedeDto.SedeId <= 0)
             {
-                _logger.LogWarning("Se intentó crear/actualizar un registro de UserSede con SedeId inválido");
-                throw new Utilities.Exceptions.ValidationException("SedeId", "El SedeId del registro de UserSede es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar una sede de usuario con SedeId inválido");
+                throw new Utilities.Exceptions.ValidationException("SedeId", "El SedeId de la sede de usuario es obligatorio y debe ser mayor a cero");
             }
         }
     }
 }
-
-
-
-
-
-
-

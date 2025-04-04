@@ -9,44 +9,33 @@ namespace Business
 {
     /// <summary>
     /// Clase de negocio encargada de la lógica relacionada con los aprendices del sistema.
-    /// Implementa la lógica de negocio para la gestión de aprendices, incluyendo operaciones CRUD.
     /// </summary>
     public class AprendizBusiness
     {
-        // Dependencias inyectadas
-        private readonly AprendizData _aprendizData;        // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly AprendizData _aprendizData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="aprendizData">Servicio de acceso a datos para aprendices</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public AprendizBusiness(AprendizData aprendizData, ILogger logger)
         {
             _aprendizData = aprendizData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los aprendices del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de aprendices en formato DTO</returns>
-        public async Task<IEnumerable<AprendizDTO>> GetAllAprendicesAsync()
+        // Método para obtener todos los aprendices como DTOs
+        public async Task<IEnumerable<AprendizDto>> GetAllAprendizAsync()
         {
             try
             {
-                // Obtener aprendices de la capa de datos
                 var aprendices = await _aprendizData.GetAllAsync();
-                var aprendicesDTO = new List<AprendizDTO>();
+                var aprendicesDTO = new List<AprendizDto>();
 
-                // Convertir cada aprendiz a DTO
                 foreach (var aprendiz in aprendices)
                 {
-                    aprendicesDTO.Add(new AprendizDTO
+                    aprendicesDTO.Add(new AprendizDto
                     {
-                        Id = aprendiz.Id,
-                        PreviuosProgram = aprendiz.PreviuosProgram                
+                        id = aprendiz.id,
+                        previousProgram = aprendiz.previousProgram,
+                        active = aprendiz.active //si existe la entidad
                     });
                 }
 
@@ -59,85 +48,77 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Obtiene un aprendiz específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del aprendiz</param>
-        /// <returns>Aprendiz en formato DTO</returns>
-        public async Task<AprendizDTO> GetAprendizByIdAsync(int id)
+        // Método para obtener un aprendiz por ID como DTO
+        public async Task<AprendizDto> GetAprendizByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un aprendiz con ID inválido: {AprendizId}", id);
+                _logger.LogWarning("Se intentó obtener un aprendiz con ID inválido: {Id}", id);
                 throw new Utilities.Exceptions.ValidationException("id", "El ID del aprendiz debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el aprendiz en la base de datos
-                var aprendiz = await _aprendizData.GetByIdAsync(id);
+                var aprendiz = await _aprendizData.GetByidAsync(id);
                 if (aprendiz == null)
                 {
-                    _logger.LogInformation("No se encontró ningún aprendiz con ID: {AprendizId}", id);
+                    _logger.LogInformation("No se encontró ningún aprendiz con ID: {Id}", id);
                     throw new EntityNotFoundException("Aprendiz", id);
                 }
 
-                // Convertir el aprendiz a DTO
-                return new AprendizDTO
+                return new AprendizDto
                 {
-                    Id = aprendiz.Id,
-                    PreviuosProgram = aprendiz.PreviuosProgram
+                    id = aprendiz.id,
+                    previousProgram = aprendiz.previousProgram,
+                    active = aprendiz.active //si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el aprendiz con ID: {AprendizId}", id);
+                _logger.LogError(ex, "Error al obtener el aprendiz con ID: {Id}", id);
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar el aprendiz con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo aprendiz en el sistema
-        /// </summary>
-        /// <param name="aprendizDto">Datos del aprendiz a crear</param>
-        /// <returns>Aprendiz creado en formato DTO</returns>
-        public async Task<AprendizDTO> CreateAprendizAsync(AprendizDTO aprendizDto)
+        // Método para crear un usuario desde un DTO
+        public async Task<AprendizDto> CreateAprendizAsync(AprendizDto aprendizDto)
         {
-            
-                // Validar los datos del DTO
+            try
+            {
                 ValidateAprendiz(aprendizDto);
 
-                // Crear la entidad Aprendiz desde el DTO
                 var aprendiz = new Aprendiz
                 {
-                    PreviuosProgram = aprendizDto.PreviuosProgram
+                    previousProgram = aprendizDto.previousProgram,
+                    active = aprendizDto.active // Si existe en la entidad
                 };
 
-                // Guardar el aprendiz en la base de datos
                 var aprendizCreado = await _aprendizData.CreateAsync(aprendiz);
 
-                // Convertir el aprendiz creado a DTO para la respuesta
-                return new AprendizDTO
+                return new AprendizDto
                 {
-                    Id = aprendiz.Id,
-                    PreviuosProgram = aprendiz.PreviuosProgram
+                    id = aprendiz.id,
+                    previousProgram = aprendiz.previousProgram,
+                    active = aprendiz.active //si existe la entidad
                 };
-            
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear nuevo aprendiz: {Name}", aprendizDto?.previousProgram ?? "null");
+                throw new ExternalServiceException("Base de datos", "Error al crear el aprendiz", ex);
+            }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de aprendiz
-        /// </summary>
-        /// <param name="aprendizDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateAprendiz(AprendizDTO aprendizDto)
+        // Método para validar el DTO
+        private void ValidateAprendiz(AprendizDto aprendizDto)
         {
-            // Validar que el DTO no sea nulo
             if (aprendizDto == null)
             {
                 throw new Utilities.Exceptions.ValidationException("El objeto aprendiz no puede ser nulo");
-            }                        
+            }
+
+
+            
         }
     }
 }

@@ -2,51 +2,39 @@
 using Entity.DTOautogestion;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los conceptos.
-    /// Implementa la lógica de negocio para la gestión de conceptos, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con los conceptos en el sistema.
     /// </summary>
     public class ConceptBusiness
     {
-        // Dependencias inyectadas
-        private readonly ConceptData _conceptData; // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly ConceptData _conceptData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="conceptData">Servicio de acceso a datos para conceptos</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public ConceptBusiness(ConceptData conceptData, ILogger logger)
         {
             _conceptData = conceptData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los conceptos del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de conceptos en formato DTO</returns>
-        public async Task<IEnumerable<ConceptDTO>> GetAllConceptsAsync()
+        // Método para obtener todos los conceptos como DTOs
+        public async Task<IEnumerable<ConceptDto>> GetAllConceptsAsync()
         {
             try
             {
-                // Obtener conceptos de la capa de datos
                 var concepts = await _conceptData.GetAllAsync();
-                var conceptsDTO = new List<ConceptDTO>();
+                var conceptsDTO = new List<ConceptDto>();
 
-                // Convertir cada concepto a DTO
                 foreach (var concept in concepts)
                 {
-                    conceptsDTO.Add(new ConceptDTO
+                    conceptsDTO.Add(new ConceptDto
                     {
-                        Id = concept.Id,
-                        Observation = concept.Observation
+                        id = concept.id,
+                        name = concept.name,
+                        observation = concept.observation
                     });
                 }
 
@@ -59,94 +47,76 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Obtiene un concepto específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del concepto</param>
-        /// <returns>Concepto en formato DTO</returns>
-        public async Task<ConceptDTO> GetConceptByIdAsync(int id)
+        // Método para obtener un concepto por ID como DTO
+        public async Task<ConceptDto> GetConceptByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un concepto con ID inválido: {ConceptId}", id);
+                _logger.LogWarning("Se intentó obtener un concepto con ID inválido: {Id}", id);
                 throw new Utilities.Exceptions.ValidationException("id", "El ID del concepto debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el concepto en la base de datos
                 var concept = await _conceptData.GetByIdAsync(id);
                 if (concept == null)
                 {
-                    _logger.LogInformation("No se encontró ningún concepto con ID: {ConceptId}", id);
-                    throw new EntityNotFoundException("Concept", id);
+                    _logger.LogInformation("No se encontró ningún concepto con ID: {Id}", id);
+                    throw new EntityNotFoundException("concept", id);
                 }
 
-                // Convertir el concepto a DTO
-                return new ConceptDTO
+                return new ConceptDto
                 {
-                    Id = concept.Id,
-                    Observation = concept.Observation
+                    id = concept.id,
+                    name = concept.name,
+                    observation = concept.observation
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el concepto con ID: {ConceptId}", id);
+                _logger.LogError(ex, "Error al obtener el concepto con ID: {Id}", id);
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar el concepto con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo concepto en el sistema
-        /// </summary>
-        /// <param name="conceptDto">Datos del concepto a crear</param>
-        /// <returns>Concepto creado en formato DTO</returns>
-        public async Task<ConceptDTO> CreateConceptAsync(ConceptDTO conceptDto)
+        // Método para crear un concepto desde un DTO
+        public async Task<ConceptDto> CreateConceptAsync(ConceptDto conceptDto)
         {
             try
             {
-                // Validar los datos del DTO
                 ValidateConcept(conceptDto);
 
-                // Crear la entidad Concept desde el DTO
                 var concept = new Concept
                 {
-                    Observation = conceptDto.Observation
+                    name = conceptDto.name,
+                    observation = conceptDto.observation
                 };
 
-                // Guardar el concepto en la base de datos
                 var conceptCreado = await _conceptData.CreateAsync(concept);
 
-                // Convertir el concepto creado a DTO para la respuesta
-                return new ConceptDTO
+                return new ConceptDto
                 {
-                    Id = concept.Id,
-                    Observation = concept.Observation
+                    id = concept.id,
+                    name = concept.name,
+                    observation = concept.observation
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo concepto: {ConceptName}", conceptDto?.Observation ?? "null");
+                _logger.LogError(ex, "Error al crear nuevo concepto: {Name}", conceptDto?.name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el concepto", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de concepto
-        /// </summary>
-        /// <param name="conceptDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateConcept(ConceptDTO conceptDto)
+        // Método para validar el DTO
+        private void ValidateConcept(ConceptDto conceptDto)
         {
-            // Validar que el DTO no sea nulo
             if (conceptDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto concepto no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto Concept no puede ser nulo");
             }
 
-            // Validar que el Name no esté vacío
-            if (string.IsNullOrWhiteSpace(conceptDto.Observation))
+            if (string.IsNullOrWhiteSpace(conceptDto.name))
             {
                 _logger.LogWarning("Se intentó crear/actualizar un concepto con Name vacío");
                 throw new Utilities.Exceptions.ValidationException("Name", "El Name del concepto es obligatorio");
@@ -154,4 +124,3 @@ namespace Business
         }
     }
 }
-

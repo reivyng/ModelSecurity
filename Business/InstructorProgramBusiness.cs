@@ -9,46 +9,34 @@ using Utilities.Exceptions;
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con los programas de instructores.
-    /// Implementa la lógica de negocio para la gestión de programas de instructores, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con los programas de instructores en el sistema.
     /// </summary>
     public class InstructorProgramBusiness
     {
-        // Dependencias inyectadas
-        private readonly InstructorProgramData _instructorProgramData; // Acceso a la capa de datos
-        private readonly ILogger _logger;                             // Servicio de logging
+        private readonly InstructorProgramData _instructorProgramData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="instructorProgramData">Servicio de acceso a datos para programas de instructores</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public InstructorProgramBusiness(InstructorProgramData instructorProgramData, ILogger logger)
         {
             _instructorProgramData = instructorProgramData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todos los programas de instructores del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de programas de instructores en formato DTO</returns>
-        public async Task<IEnumerable<InstructorProgramDTO>> GetAllInstructorProgramsAsync()
+        // Método para obtener todos los programas de instructores como DTOs
+        public async Task<IEnumerable<InstructorProgramDto>> GetAllInstructorProgramsAsync()
         {
             try
             {
-                // Obtener programas de instructores de la capa de datos
                 var instructorPrograms = await _instructorProgramData.GetAllAsync();
-                var instructorProgramsDTO = new List<InstructorProgramDTO>();
+                var instructorProgramsDTO = new List<InstructorProgramDto>();
 
-                // Convertir cada programa de instructor a DTO
                 foreach (var instructorProgram in instructorPrograms)
                 {
-                    instructorProgramsDTO.Add(new InstructorProgramDTO
+                    instructorProgramsDTO.Add(new InstructorProgramDto
                     {
                         Id = instructorProgram.Id,
                         InstructorId = instructorProgram.InstructorId,
-                        ProgramId = instructorProgram.ProgramId
+                        ProgramId = instructorProgram.ProgramId,
                     });
                 }
 
@@ -61,103 +49,86 @@ namespace Business
             }
         }
 
-        /// <summary>
-        /// Obtiene un programa de instructor específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del programa de instructor</param>
-        /// <returns>Programa de instructor en formato DTO</returns>
-        public async Task<InstructorProgramDTO> GetInstructorProgramByIdAsync(int id)
+        // Método para obtener un programa de instructor por ID como DTO
+        public async Task<InstructorProgramDto> GetInstructorProgramByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un programa de instructor con ID inválido: {InstructorProgramId}", id);
+                _logger.LogWarning("Se intentó obtener un programa de instructor con ID inválido: {Id}", id);
                 throw new Utilities.Exceptions.ValidationException("id", "El ID del programa de instructor debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar el programa de instructor en la base de datos
                 var instructorProgram = await _instructorProgramData.GetByIdAsync(id);
                 if (instructorProgram == null)
                 {
-                    _logger.LogInformation("No se encontró ningún programa de instructor con ID: {InstructorProgramId}", id);
-                    throw new EntityNotFoundException("InstructorProgram", id);
+                    _logger.LogInformation("No se encontró ningún programa de instructor con ID: {Id}", id);
+                    throw new EntityNotFoundException("instructorProgram", id);
                 }
 
-                // Convertir el programa de instructor a DTO
-                return new InstructorProgramDTO
+                return new InstructorProgramDto
                 {
                     Id = instructorProgram.Id,
                     InstructorId = instructorProgram.InstructorId,
-                    ProgramId = instructorProgram.ProgramId
+                    ProgramId = instructorProgram.ProgramId,
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el programa de instructor con ID: {InstructorProgramId}", id);
+                _logger.LogError(ex, "Error al obtener el programa de instructor con ID: {Id}", id);
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar el programa de instructor con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea un nuevo programa de instructor en el sistema
-        /// </summary>
-        /// <param name="instructorProgramDto">Datos del programa de instructor a crear</param>
-        /// <returns>Programa de instructor creado en formato DTO</returns>
-        public async Task<InstructorProgramDTO> CreateInstructorProgramAsync(InstructorProgramDTO instructorProgramDto)
+        // Método para crear un programa de instructor desde un DTO
+        public async Task<InstructorProgramDto> CreateInstructorProgramAsync(InstructorProgramDto instructorProgramDto)
         {
-            
-                // Validar los datos del DTO
+            try
+            {
                 ValidateInstructorProgram(instructorProgramDto);
 
-                // Crear la entidad InstructorProgram desde el DTO
                 var instructorProgram = new InstructorProgram
                 {
                     InstructorId = instructorProgramDto.InstructorId,
                     ProgramId = instructorProgramDto.ProgramId
                 };
 
-                // Guardar el programa de instructor en la base de datos
                 var instructorProgramCreado = await _instructorProgramData.CreateAsync(instructorProgram);
 
-                // Convertir el programa de instructor creado a DTO para la respuesta
-                return new InstructorProgramDTO
+                return new InstructorProgramDto
                 {
                     Id = instructorProgram.Id,
                     InstructorId = instructorProgram.InstructorId,
-                    ProgramId = instructorProgram.ProgramId
-                };                
+                    ProgramId = instructorProgram.ProgramId,
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al crear nuevo programa de instructor");
+                throw new ExternalServiceException("Base de datos", "Error al crear el programa de instructor", ex);
+            }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de programa de instructor
-        /// </summary>
-        /// <param name="instructorProgramDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateInstructorProgram(InstructorProgramDTO instructorProgramDto)
+        // Método para validar el DTO
+        private void ValidateInstructorProgram(InstructorProgramDto instructorProgramDto)
         {
-            // Validar que el DTO no sea nulo
             if (instructorProgramDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto programa de instructor no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto InstructorProgram no puede ser nulo");
             }
 
-            // Validar que el InstructorId no esté vacío
             if (instructorProgramDto.InstructorId <= 0)
             {
                 _logger.LogWarning("Se intentó crear/actualizar un programa de instructor con InstructorId inválido");
-                throw new Utilities.Exceptions.ValidationException("InstructorId", "El InstructorId del programa de instructor es obligatorio");
+                throw new Utilities.Exceptions.ValidationException("InstructorId", "El InstructorId es obligatorio y debe ser mayor que cero");
             }
 
-            // Validar que el ProgramId no esté vacío
             if (instructorProgramDto.ProgramId <= 0)
             {
                 _logger.LogWarning("Se intentó crear/actualizar un programa de instructor con ProgramId inválido");
-                throw new Utilities.Exceptions.ValidationException("ProgramId", "El ProgramId del programa de instructor es obligatorio");
+                throw new Utilities.Exceptions.ValidationException("ProgramId", "El ProgramId es obligatorio y debe ser mayor que cero");
             }
         }
     }
 }
-
-

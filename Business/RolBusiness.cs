@@ -1,163 +1,129 @@
-﻿using Data;
-using Entity.DTOautogestion;
+﻿
+using Data;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
+using System.ComponentModel.Design;
+using Entity.DTOautogestion;
+
 
 namespace Business
 {
     /// <summary>
     /// Clase de negocio encargada de la lógica relacionada con los roles del sistema.
-    /// Implementa la lógica de negocio para la gestión de roles, incluyendo operaciones CRUD.
     /// </summary>
     public class RolBusiness
     {
-        // Dependencias inyectadas
-        private readonly RolData _rolData;        // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly RolData _rolData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="rolData">Servicio de acceso a datos para roles</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public RolBusiness(RolData rolData, ILogger logger)
         {
             _rolData = rolData;
             _logger = logger;
         }
-
-        /// <summary>
-        /// Obtiene todos los roles del sistema y los convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de roles en formato DTO</returns>
-        public async Task<IEnumerable<RolDTO>> GetAllRolesAsync()
+        // Método para obtener todos los roles como DTOs
+        public async Task<IEnumerable<RolDto>> GetAllRolesAsync()
         {
             try
             {
-                // Obtener roles de la capa de datos
                 var roles = await _rolData.GetAllAsync();
-                var rolesDTO = new List<RolDTO>();
+                var rolesDTO = new List<RolDto>();
 
-                // Convertir cada rol a DTO
                 foreach (var rol in roles)
                 {
-                    rolesDTO.Add(new RolDTO
+                    rolesDTO.Add(new RolDto
                     {
                         Id = rol.Id,
-                        TypeRol = rol.Type_Rol,
+                        TypeRol = rol.TypeRol,
                         Description = rol.Description,
-                        Active = rol.Active
+                        Active = rol.Active //si existe la entidad
                     });
                 }
-
                 return rolesDTO;
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todos los roles");
+                _logger.LogError(ex, "Error al obtener todos los rolez");
                 throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de roles", ex);
             }
         }
-
-        /// <summary>
-        /// Obtiene un rol específico por su ID
-        /// </summary>
-        /// <param name="id">Identificador único del rol</param>
-        /// <returns>Rol en formato DTO</returns>
-        public async Task<RolDTO> GetRolByIdAsync(int id)
+        // Método para obtener un rol por su ID como DTO
+        public async Task<RolDto> GetRolByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener un rol con ID inválido: {RolId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del rol debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener un rol con un ID invalido: {RolId}",id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID del rol debe ser mayor a 0");
             }
-
             try
             {
-                // Buscar el rol en la base de datos
                 var rol = await _rolData.GetByidAsync(id);
                 if (rol == null)
                 {
-                    _logger.LogInformation("No se encontró ningún rol con ID: {RolId}", id);
+                    _logger.LogInformation("No se encontró el rol con ID {RolId}", id);
                     throw new EntityNotFoundException("Rol", id);
                 }
-
-                // Convertir el rol a DTO
-                return new RolDTO
+                return new RolDto
                 {
                     Id = rol.Id,
-                    TypeRol = rol.Type_Rol,
+                    TypeRol = rol.TypeRol,
                     Description = rol.Description,
-                    Active = rol.Active
+                    Active = rol.Active //si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener el rol con ID: {RolId}", id);
+                _logger.LogError(ex,"Error al obtener el rol con ID {RolId}", id);
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar el rol con ID {id}", ex);
             }
         }
-
-        /// <summary>
-        /// Crea un nuevo rol en el sistema
-        /// </summary>
-        /// <param name="rolDto">Datos del rol a crear</param>
-        /// <returns>Rol creado en formato DTO</returns>
-        public async Task<RolDTO> CreateRolAsync(RolDTO rolDto)
+        // Método para crear un rol desde un DTO
+        public async Task<RolDto> CreateRolAsync(RolDto RolDto)
         {
             try
             {
-                // Validar los datos del DTO
-                ValidateRol(rolDto);
+                ValidateRol(RolDto);
 
-                // Crear la entidad Rol desde el DTO
                 var rol = new Rol
                 {
-                    Type_Rol = rolDto.TypeRol,
-                    Description = rolDto.Description,
-                    Active = rolDto.Active
+                    Id = RolDto.Id,
+                    TypeRol = RolDto.TypeRol,
+                    Description = RolDto.Description,
+                    Active = RolDto.Active //si existe la entidad
                 };
 
-                // Guardar el rol en la base de datos
                 var rolCreado = await _rolData.CreateAsync(rol);
 
-                // Convertir el rol creado a DTO para la respuesta
-                return new RolDTO
+                return new RolDto
                 {
                     Id = rol.Id,
-                    TypeRol = rol.Type_Rol,
+                    TypeRol = rol.TypeRol,
                     Description = rol.Description,
-                    Active = rol.Active
+                    Active = rol.Active //si existe la entidad
+
                 };
-            }
+              }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nuevo rol: {RolNombre}", rolDto?.TypeRol ?? "null");
-                throw new ExternalServiceException("Base de datos", "Error al crear el rol", ex);
+                _logger.LogError(ex, "Error al crear un nuevo rol: {RolNombre}", RolDto?.TypeRol?? "null");
+                throw new ExternalServiceException("Base de datos", $"Error al crear el rol", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de rol
-        /// </summary>
-        /// <param name="rolDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateRol(RolDTO rolDto)
+        // Método para validar el DTO 
+        private void ValidateRol(RolDto RolDto)
         {
-            // Validar que el DTO no sea nulo
-            if (rolDto == null)
+            if (RolDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto rol no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException( "El objeto rol no puede ser nulo");
             }
-
-            // Validar que el TypeRol no esté vacío
-            if (string.IsNullOrWhiteSpace(rolDto.TypeRol))
+            if (string.IsNullOrWhiteSpace(RolDto.TypeRol))
             {
-                _logger.LogWarning("Se intentó crear/actualizar un rol con TypeRol vacío");
-                throw new Utilities.Exceptions.ValidationException("TypeRol", "El TypeRol del rol es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar un rol con nombre vacio");
+                throw new Utilities.Exceptions.ValidationException("Name", "El nombre del rol nes obligatorio");
             }
         }
     }

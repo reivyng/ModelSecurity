@@ -1,53 +1,43 @@
-using Data;
+﻿using Data;
+using Entity.DTOautogestion;
 using Entity.DTOautogestion.pivote;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con la relación entre roles y formularios.
-    /// Implementa la lógica de negocio para la gestión de las relaciones entre roles y formularios.
+    /// Clase de negocio encargada de la lógica relacionada con los roles de formulario en el sistema.
     /// </summary>
     public class RolFormBusiness
     {
-        // Dependencias inyectadas
-        private readonly RolFormData _rolFormData;        // Acceso a la capa de datos
-        private readonly ILogger _logger;         // Servicio de logging
+        private readonly RolFormData _rolFormData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="rolFormData">Servicio de acceso a datos para la relación rol-form</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public RolFormBusiness(RolFormData rolFormData, ILogger logger)
         {
             _rolFormData = rolFormData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todas las relaciones rol-form del sistema y las convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de relaciones rol-form en formato DTO</returns>
-        public async Task<IEnumerable<RolFormDTO>> GetAllRolFormsAsync()
+        // Método para obtener todos los roles de formulario como DTOs
+        public async Task<IEnumerable<RolFormDto>> GetAllRolFormsAsync()
         {
             try
             {
-                // Obtener relaciones de la capa de datos
                 var rolForms = await _rolFormData.GetAllAsync();
-                var rolFormsDTO = new List<RolFormDTO>();
+                var rolFormsDTO = new List<RolFormDto>();
 
-                // Convertir cada relación a DTO
                 foreach (var rolForm in rolForms)
                 {
-                    rolFormsDTO.Add(new RolFormDTO
+                    rolFormsDTO.Add(new RolFormDto
                     {
                         Id = rolForm.Id,
+                        Permission = rolForm.Permission,
                         RolId = rolForm.RolId,
                         FormId = rolForm.FormId,
-                        Permission = rolForm.Permission
 
                     });
                 }
@@ -56,117 +46,88 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todas las relaciones rol-form");
-                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de relaciones rol-form", ex);
+                _logger.LogError(ex, "Error al obtener todos los roles de formulario");
+                throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de roles de formulario", ex);
             }
         }
 
-        /// <summary>
-        /// Obtiene una relación rol-form específica por su ID
-        /// </summary>
-        /// <param name="id">Identificador único de la relación</param>
-        /// <returns>Relación rol-form en formato DTO</returns>
-        public async Task<RolFormDTO> GetRolFormByIdAsync(int id)
+        // Método para obtener un rol de formulario por ID como DTO
+        public async Task<RolFormDto> GetRolFormByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener una relación rol-form con ID inválido: {RolFormId}", id);
-                throw new ValidationException("id", "El ID de la relación debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener un rol de formulario con ID inválido: {Id}", id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID del rol de formulario debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar la relación en la base de datos
-                var rolForm = await _rolFormData.GetByidAsync(id);
+                var rolForm = await _rolFormData.GetByIdAsync(id);
                 if (rolForm == null)
                 {
-                    _logger.LogInformation("No se encontró ninguna relación rol-form con ID: {RolFormId}", id);
-                    throw new EntityNotFoundException("RolForm", id);
+                    _logger.LogInformation("No se encontró ningún rol de formulario con ID: {Id}", id);
+                    throw new EntityNotFoundException("rolForm", id);
                 }
 
-                // Convertir la relación a DTO
-                return new RolFormDTO
+                return new RolFormDto
                 {
                     Id = rolForm.Id,
                     Permission = rolForm.Permission,
                     RolId = rolForm.RolId,
                     FormId = rolForm.FormId,
-                   
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener la relación rol-form con ID: {RolFormId}", id);
-                throw new ExternalServiceException("Base de datos", $"Error al recuperar la relación rol-form con ID {id}", ex);
+                _logger.LogError(ex, "Error al obtener el rol de formulario con ID: {Id}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al recuperar el rol de formulario con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea una nueva relación rol-form en el sistema
-        /// </summary>
-        /// <param name="rolFormDto">Datos de la relación a crear</param>
-        /// <returns>Relación creada en formato DTO</returns>
-        public async Task<RolFormDTO> CreateRolFormAsync(RolFormDTO rolFormDto)
+        // Método para crear un rol de formulario desde un DTO
+        public async Task<RolFormDto> CreateRolFormAsync(RolFormDto rolFormDto)
         {
             try
             {
-                // Validar los datos del DTO
                 ValidateRolForm(rolFormDto);
 
-                // Crear la entidad RolForm desde el DTO
                 var rolForm = new RolForm
                 {
-                    Id = rolFormDto.Id,
+                    Permission = rolFormDto.Permission,
                     RolId = rolFormDto.RolId,
-                    FormId = rolFormDto.FormId,
-                    Permission = rolFormDto.Permission
+                    FormId = rolFormDto.FormId
                 };
 
-                // Guardar la relación en la base de datos
                 var rolFormCreado = await _rolFormData.CreateAsync(rolForm);
 
-                // Convertir la relación creada a DTO para la respuesta
-                return new RolFormDTO
+                return new RolFormDto
                 {
                     Id = rolForm.Id,
+                    Permission = rolForm.Permission,
                     RolId = rolForm.RolId,
-                    FormId = rolForm.FormId,                    
+                    FormId = rolForm.FormId,
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nueva relación rol-form");
-                throw new ExternalServiceException("Base de datos", "Error al crear la relación rol-form", ex);
+                _logger.LogError(ex, "Error al crear nuevo rol de formulario: {Name}", rolFormDto?.Permission ?? "null");
+                throw new ExternalServiceException("Base de datos", "Error al crear el rol de formulario", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de relación rol-form
-        /// </summary>
-        /// <param name="rolFormDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateRolForm(RolFormDTO rolFormDto)
+        // Método para validar el DTO
+        private void ValidateRolForm(RolFormDto rolFormDto)
         {
-            // Validar que el DTO no sea nulo
             if (rolFormDto == null)
             {
-                throw new ValidationException("El objeto relación rol-form no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto RolForm no puede ser nulo");
             }
 
-            // Validar que el RolId sea válido
-            if (rolFormDto.RolId <= 0)
+            if (string.IsNullOrWhiteSpace(rolFormDto.Permission))
             {
-                _logger.LogWarning("Se intentó crear/actualizar una relación con RolId inválido: {RolId}", rolFormDto.RolId);
-                throw new ValidationException("RolId", "El ID del rol debe ser mayor que cero");
-            }
-
-            // Validar que el FormId sea válido
-            if (rolFormDto.FormId <= 0)
-            {
-                _logger.LogWarning("Se intentó crear/actualizar una relación con FormId inválido: {FormId}", rolFormDto.FormId);
-                throw new ValidationException("FormId", "El ID del formulario debe ser mayor que cero");
+                _logger.LogWarning("Se intentó crear/actualizar un rol de formulario con permiso vacío");
+                throw new Utilities.Exceptions.ValidationException("permission", "El permiso del rol de formulario es obligatorio");
             }
         }
     }
-} 
+}

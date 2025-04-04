@@ -8,45 +8,35 @@ using Utilities.Exceptions;
 namespace Business
 {
     /// <summary>
-    /// Clase de negocio encargada de la lógica relacionada con las verificaciones.
-    /// Implementa la lógica de negocio para la gestión de verificaciones, incluyendo operaciones CRUD.
+    /// Clase de negocio encargada de la lógica relacionada con las verificaciones del sistema.
     /// </summary>
     public class VerificationBusiness
     {
-        // Dependencias inyectadas
-        private readonly VerificationData _verificationData; // Acceso a la capa de datos
-        private readonly ILogger _logger;                   // Servicio de logging
+        private readonly VerificationData _verificationData;
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// Constructor que recibe las dependencias necesarias
-        /// </summary>
-        /// <param name="verificationData">Servicio de acceso a datos para verificaciones</param>
-        /// <param name="logger">Servicio de logging para registro de eventos</param>
         public VerificationBusiness(VerificationData verificationData, ILogger logger)
         {
             _verificationData = verificationData;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Obtiene todas las verificaciones del sistema y las convierte a DTOs
-        /// </summary>
-        /// <returns>Lista de verificaciones en formato DTO</returns>
-        public async Task<IEnumerable<VerificationDTO>> GetAllVerificationsAsync()
+        // Método para obtener todos las verificaciones como DTOs
+        public async Task<IEnumerable<VerificationDto>> GetAllVerificationsAsync()
         {
             try
             {
-                // Obtener verificaciones de la capa de datos
                 var verifications = await _verificationData.GetAllAsync();
-                var verificationsDTO = new List<VerificationDTO>();
+                var verificationsDTO = new List<VerificationDto>();
 
-                // Convertir cada verificación a DTO
                 foreach (var verification in verifications)
                 {
-                    verificationsDTO.Add(new VerificationDTO
+                    verificationsDTO.Add(new VerificationDto
                     {
                         Id = verification.Id,
-                        Observation = verification.Observation
+                        Name = verification.Name,
+                        Observation = verification.Observation,
+                        Active = verification.Active //si existe la entidad
                     });
                 }
 
@@ -54,111 +44,90 @@ namespace Business
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todas las verificaciones");
+                _logger.LogError(ex, "Error al obtener todos las verificaciones ");
                 throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de verificaciones", ex);
             }
         }
 
-        /// <summary>
-        /// Obtiene una verificación específica por su ID
-        /// </summary>
-        /// <param name="id">Identificador único de la verificación</param>
-        /// <returns>Verificación en formato DTO</returns>
-        public async Task<VerificationDTO> GetVerificationByIdAsync(int id)
+        // Método para obtener una verificacion por ID como DTO
+        public async Task<VerificationDto> GetVerificationByIdAsync(int id)
         {
-            // Validar que el ID sea válido
             if (id <= 0)
             {
-                _logger.LogWarning("Se intentó obtener una verificación con ID inválido: {VerificationId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID de la verificación debe ser mayor que cero");
+                _logger.LogWarning("Se intentó obtener una verificacion con ID inválido: {Id}", id);
+                throw new Utilities.Exceptions.ValidationException("id", "El ID de la verificacion debe ser mayor que cero");
             }
 
             try
             {
-                // Buscar la verificación en la base de datos
                 var verification = await _verificationData.GetByIdAsync(id);
                 if (verification == null)
                 {
-                    _logger.LogInformation("No se encontró ninguna verificación con ID: {VerificationId}", id);
-                    throw new EntityNotFoundException("Verification", id);
+                    _logger.LogInformation("No se encontró ninguna verificacion con ID: {Id}", id);
+                    throw new EntityNotFoundException("verification", id);
                 }
 
-                // Convertir la verificación a DTO
-                return new VerificationDTO
+                return new VerificationDto
                 {
                     Id = verification.Id,
-                    Observation = verification.Observation
+                    Name = verification.Name,
+                    Observation = verification.Observation,
+                    Active = verification.Active //si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener la verificación con ID: {VerificationId}", id);
-                throw new ExternalServiceException("Base de datos", $"Error al recuperar la verificación con ID {id}", ex);
+                _logger.LogError(ex, "Error al obtener la verificacion con ID: {Id}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al recuperar la verificacion con ID {id}", ex);
             }
         }
 
-        /// <summary>
-        /// Crea una nueva verificación en el sistema
-        /// </summary>
-        /// <param name="verificationDto">Datos de la verificación a crear</param>
-        /// <returns>Verificación creada en formato DTO</returns>
-        public async Task<VerificationDTO> CreateVerificationAsync(VerificationDTO verificationDto)
+        // Método para crear una verificacion desde un DTO
+        public async Task<VerificationDto> CreateVerificationAsync(VerificationDto verificationDto)
         {
             try
             {
-                // Validar los datos del DTO
-                ValidateVerification(verificationDto);
+                ValidateUser(verificationDto);
 
-                // Crear la entidad Verification desde el DTO
                 var verification = new Verification
                 {
-                    Observation = verificationDto.Observation
+                    Name = verificationDto.Name,
+                    Observation = verificationDto.Observation,
+                    Active = verificationDto.Active //si existe la entidad
                 };
+           
+                var verificationCreado = await _verificationData.CreateAsync(verification);
 
-                // Guardar la verificación en la base de datos
-                var verificationCreada = await _verificationData.CreateAsync(verification);
-
-                // Convertir la verificación creada a DTO para la respuesta
-                return new VerificationDTO
+                return new VerificationDto
                 {
-                    Id = verificationCreada.Id,
-                    Observation = verificationCreada.Observation
+                    Id = verification.Id,
+                    Name = verification.Name,
+                    Observation = verification.Observation,
+                    Active = verification.Active //si existe la entidad
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al crear nueva verificación: {VerificationObservation}", verificationDto?.Observation ?? "null");
-                throw new ExternalServiceException("Base de datos", "Error al crear la verificación", ex);
+                _logger.LogError(ex, "Error al crear nueva verificacion: {Name}", verificationDto?.Name ?? "null");
+                throw new ExternalServiceException("Base de datos", "Error al crear la verificacion", ex);
             }
         }
 
-        /// <summary>
-        /// Valida los datos del DTO de verificación
-        /// </summary>
-        /// <param name="verificationDto">DTO a validar</param>
-        /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateVerification(VerificationDTO verificationDto)
+        // Método para validar el DTO
+        private void ValidateUser(VerificationDto verificationDto)
         {
-            // Validar que el DTO no sea nulo
             if (verificationDto == null)
             {
-                throw new Utilities.Exceptions.ValidationException("El objeto verificación no puede ser nulo");
+                throw new Utilities.Exceptions.ValidationException("El objeto verificacion no puede ser nulo");
             }
 
-            // Validar que el Observation no esté vacío
-            if (string.IsNullOrWhiteSpace(verificationDto.Observation))
+            if (string.IsNullOrWhiteSpace(verificationDto.Name))
             {
-                _logger.LogWarning("Se intentó crear/actualizar una verificación con Observation vacío");
-                throw new Utilities.Exceptions.ValidationException("Observation", "El Observation de la verificación es obligatorio");
+                _logger.LogWarning("Se intentó crear/actualizar una verificacion con Name vacío");
+                throw new Utilities.Exceptions.ValidationException("Name", "El Name de la verificacion es obligatorio");
             }
+
+         
         }
     }
 }
-
-
-
-
-
-
-
-
