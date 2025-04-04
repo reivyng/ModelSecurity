@@ -11,14 +11,18 @@ namespace Entity.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string First_Name { get; set; }
-        public string Second_Name { get; set; }
-        public string First_Last_Name { get; set; }
-        public string Second_Last_Name { get; set; }
-        public string Phone_Number { get; set; }
+        public string FirstName { get; set; }
+        public string SecondName { get; set; }
+        public string FirstLastName { get; set; }
+        public string SecondLastName { get; set; }
+        public string PhoneNumber { get; set; }
         public string Email { get; set; }
-        public string Type_Identification { get; set; }
-        public int Number_Identification { get; set; }
+        public string TypeIdentification { get; set; }
+        public int NumberIdentification { get; set; }
         public bool Signig { get; set; }
+        public bool Active { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime DeleteDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

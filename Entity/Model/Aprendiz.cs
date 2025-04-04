@@ -10,6 +10,7 @@ namespace Entity.Model
     {
         public int Id { get; set; }
         public string PreviuosProgram { get; set; }
+        public bool Active { get; set; }
         public int UserId { get; set; }
         public User User { get; set; }
     }

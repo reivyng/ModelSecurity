@@ -10,7 +10,7 @@ namespace Entity.DTOs
     public class UserSedeDTO
     {
         public int Id { get; set; }
-        public string status_procedure { get; set; }
+        public string StatusProcedure { get; set; }
         public int UserId { get; set; }
         public int SedeId { get; set; }
     }

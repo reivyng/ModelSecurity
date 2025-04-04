@@ -45,7 +45,7 @@ namespace Business
                     formModulesDTO.Add(new FormModuleDTO
                     {
                         Id = formModule.Id,
-                        StatusProcedure = formModule.Status_Procedure
+                        StatusProcedure = formModule.StatusProcedure
                     });
                 }
 
@@ -86,7 +86,7 @@ namespace Business
                 return new FormModuleDTO
                 {
                     Id = formModule.Id,
-                    StatusProcedure = formModule.Status_Procedure
+                    StatusProcedure = formModule.StatusProcedure
                 };
             }
             catch (Exception ex)
@@ -111,7 +111,7 @@ namespace Business
                 // Crear la entidad FormModule desde el DTO
                 var formModule = new FormModule
                 {
-                    Status_Procedure = formModuleDto.StatusProcedure
+                    StatusProcedure = formModuleDto.StatusProcedure
                 };
 
                 // Guardar la relación en la base de datos
@@ -121,7 +121,7 @@ namespace Business
                 return new FormModuleDTO
                 {
                     Id = formModule.Id,
-                    StatusProcedure = formModule.Status_Procedure
+                    StatusProcedure = formModule.StatusProcedure
                 };
             }
             catch (Exception ex)

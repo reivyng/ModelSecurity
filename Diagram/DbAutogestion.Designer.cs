@@ -1,2 +1,2 @@
-﻿// Seeing this comment implies that the code generation for file 'C:\Users\ReyvingF\OneDrive\Documentos\trabajos-Sena\2025\Jhon Corredor\ModelSecurity\Diagram\DbAutogestion.edmx'
+﻿// Seeing this comment implies that the code generation for file 'C:\Users\Asus\source\repos\ModelSecurity\Diagram\DbAutogestion.edmx'
 // failed. See the ErrorList for details.

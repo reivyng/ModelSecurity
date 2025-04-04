@@ -12,5 +12,6 @@ namespace Entity.DTOautogestion
         public string Name { get; set; }
         public string Description { get; set; }
         public string Document { get; set; }
+        public bool Active { get; set; }
     }
 }

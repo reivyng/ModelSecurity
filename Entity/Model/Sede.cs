@@ -15,9 +15,9 @@ namespace Entity.Model
         public string PhoneSede { get; set; }
         public string EmailContact { get; set; }
         public bool Active { get; set; }
-        public DateTime Create_Date { get; set; }
-        public DateTime Delete_Date { get; set; }
-        public DateTime Update_Date { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime DeleteDate { get; set; }
+        public DateTime UpdateDate { get; set; }
         public int CenterId { get; set; }
         public Center Center { get; set; }
     }

@@ -16,7 +16,7 @@ namespace Entity.Model
         public string Action { get; set; }
         public bool Active { get; set; }
         public string UserName { get; set; }
-        public DateTime CreateAt { get; set; }
-        public DateTime DeleteAt { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }

@@ -8,7 +8,6 @@ namespace Entity.DTOautogestion
 {
     public class ModuleDTO
     {
-
         public int Id { get; set; }
         public bool Active { get; set; }
         public string Name { get; set; }

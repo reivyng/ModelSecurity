@@ -32,18 +32,18 @@ namespace Business
         /// Obtiene todos los registros de Stade del sistema y los convierte a DTOs
         /// </summary>
         /// <returns>Lista de registros de Stade en formato DTO</returns>
-        public async Task<IEnumerable<StadeDTO>> GetAllStadesAsync()
+        public async Task<IEnumerable<StateDTO>> GetAllStadesAsync()
         {
             try
             {
                 // Obtener registros de Stade de la capa de datos
                 var stades = await _stadeData.GetAllAsync();
-                var stadesDTO = new List<StadeDTO>();
+                var stadesDTO = new List<StateDTO>();
 
                 // Convertir cada registro de Stade a DTO
                 foreach (var stade in stades)
                 {
-                    stadesDTO.Add(new StadeDTO
+                    stadesDTO.Add(new StateDTO
                     {
                         Id = stade.Id,
                         Description = stade.Description,
@@ -65,7 +65,7 @@ namespace Business
         /// </summary>
         /// <param name="id">Identificador único del registro de Stade</param>
         /// <returns>Registro de Stade en formato DTO</returns>
-        public async Task<StadeDTO> GetStadeByIdAsync(int id)
+        public async Task<StateDTO> GetStadeByIdAsync(int id)
         {
             // Validar que el ID sea válido
             if (id <= 0)
@@ -85,7 +85,7 @@ namespace Business
                 }
 
                 // Convertir el registro de Stade a DTO
-                return new StadeDTO
+                return new StateDTO
                 {
                     Id = stade.Id,
                     Description = stade.Description,
@@ -104,7 +104,7 @@ namespace Business
         /// </summary>
         /// <param name="stadeDto">Datos del registro de Stade a crear</param>
         /// <returns>Registro de Stade creado en formato DTO</returns>
-        public async Task<StadeDTO> CreateStadeAsync(StadeDTO stadeDto)
+        public async Task<StateDTO> CreateStadeAsync(StateDTO stadeDto)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace Business
                 ValidateStade(stadeDto);
 
                 // Crear la entidad Stade desde el DTO
-                var stade = new Stade
+                var stade = new State
                 {
                     Description = stadeDto.Description,
                     TypeStade = stadeDto.TypeStade
@@ -122,7 +122,7 @@ namespace Business
                 var stadeCreado = await _stadeData.CreateAsync(stade);
 
                 // Convertir el registro de Stade creado a DTO para la respuesta
-                return new StadeDTO
+                return new StateDTO
                 {
                     Id = stade.Id,
                     Description = stade.Description,
@@ -141,7 +141,7 @@ namespace Business
         /// </summary>
         /// <param name="stadeDto">DTO a validar</param>
         /// <exception cref="ValidationException">Se lanza cuando los datos no son válidos</exception>
-        private void ValidateStade(StadeDTO stadeDto)
+        private void ValidateStade(StateDTO stadeDto)
         {
             // Validar que el DTO no sea nulo
             if (stadeDto == null)

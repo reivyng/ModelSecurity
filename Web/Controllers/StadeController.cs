@@ -37,7 +37,7 @@ namespace Web.Controllers
         /// <response code="200">Retorna la lista de registros de Stade</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<StadeDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<StateDTO>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllStades()
         {
@@ -63,7 +63,7 @@ namespace Web.Controllers
         /// <response code="404">Registro de Stade no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(StadeDTO), 200)]
+        [ProducesResponseType(typeof(StateDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -100,10 +100,10 @@ namespace Web.Controllers
         /// <response code="400">Datos del registro de Stade no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(StadeDTO), 201)]
+        [ProducesResponseType(typeof(StateDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateStade([FromBody] StadeDTO stadeDto)
+        public async Task<IActionResult> CreateStade([FromBody] StateDTO stadeDto)
         {
             try
             {

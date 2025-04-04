@@ -1,13 +1,8 @@
 ﻿using Business;
-using Data;
 using Entity.DTOautogestion;
-using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -19,7 +14,7 @@ namespace Web.Controllers
     [Produces("application/json")]
     public class UserRolController : ControllerBase
     {
-        private readonly RolUserBusiness _RolUserBusiness;
+        private readonly UserRolBusiness _RolUserBusiness;
         private readonly ILogger<UserRolController> _logger;
 
         /// <summary>
@@ -27,7 +22,7 @@ namespace Web.Controllers
         /// </summary>
         /// <param name="RolUserBusiness">Capa de negocio de relaciones entre roles y usuarios</param>
         /// <param name="logger">Logger para registro de eventos</param>
-        public UserRolController(RolUserBusiness RolUserBusiness, ILogger<UserRolController> logger)
+        public UserRolController(UserRolBusiness RolUserBusiness, ILogger<UserRolController> logger)
         {
             _RolUserBusiness = RolUserBusiness;
             _logger = logger;
@@ -46,7 +41,7 @@ namespace Web.Controllers
         {
             try
             {
-                var rolUsers = await _RolUserBusiness.GetAllRolUsersAsync();
+                var rolUsers = await _RolUserBusiness.GetAllUserRolsAsync();
                 return Ok(rolUsers);
             }
             catch (ExternalServiceException ex)
@@ -66,7 +61,7 @@ namespace Web.Controllers
         /// <response code="404">Relación no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RolUserDto), 200)]
+        [ProducesResponseType(typeof(UserRolDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -74,7 +69,7 @@ namespace Web.Controllers
         {
             try
             {
-                var rolUser = await _RolUserBusiness.GetRolUserByIdAsync(id);
+                var rolUser = await _RolUserBusiness.GetUserRolByIdAsync(id);
                 return Ok(rolUser);
             }
             catch (ValidationException ex)
@@ -97,20 +92,20 @@ namespace Web.Controllers
         /// <summary>
         /// Crea una nueva relación entre rol y usuario
         /// </summary>
-        /// <param name="RolUserDto">Datos de la relación a crear</param>
+        /// <param name="UserRolDTO">Datos de la relación a crear</param>
         /// <returns>Relación creada</returns>
         /// <response code="201">Retorna la relación creada</response>
         /// <response code="400">Datos de la relación no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RolUserDto), 201)]
+        [ProducesResponseType(typeof(UserRolDTO), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRolUser([FromBody] RolUserDto RolUserDto)
+        public async Task<IActionResult> CreateRolUser([FromBody] UserRolDTO UserRolDTO)
         {
             try
             {
-                var createdRolUser = await _RolUserBusiness.CreateRolUserAsync(RolUserDto);
+                var createdRolUser = await _RolUserBusiness.CreateUserRolAsync(UserRolDTO);
                 return CreatedAtAction(nameof(GetRolUserById), new { id = createdRolUser.Id }, createdRolUser);
             }
             catch (ValidationException ex)

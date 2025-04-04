@@ -15,5 +15,6 @@ namespace Entity.DTOautogestion
         public string PhoneSede { get; set; }
         public string EmailContact { get; set; }
         public int CenterId { get; set; }
+        public bool Active { get; set; }
     }
 }

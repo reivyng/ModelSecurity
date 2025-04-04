@@ -31,9 +31,9 @@ namespace Data
         /// Obtiene todos los registros de Stade almacenados en la base de datos.
         /// </summary>
         /// <returns>Lista de registros de Stade.</returns>
-        public async Task<IEnumerable<Stade>> GetAllAsync()
+        public async Task<IEnumerable<State>> GetAllAsync()
         {
-            return await _context.Set<Stade>().ToListAsync();
+            return await _context.Set<State>().ToListAsync();
         }
 
         /// <summary>
@@ -41,11 +41,11 @@ namespace Data
         /// </summary>
         /// <param name="id">Identificador único del registro de Stade.</param>
         /// <returns>El registro de Stade con el ID especificado.</returns>
-        public async Task<Stade?> GetByIdAsync(int id)
+        public async Task<State?> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Set<Stade>().FindAsync(id);
+                return await _context.Set<State>().FindAsync(id);
             }
             catch (Exception ex)
             {
@@ -59,11 +59,11 @@ namespace Data
         /// </summary>
         /// <param name="stade">Instancia del registro de Stade a crear.</param>
         /// <returns>El registro de Stade creado.</returns>
-        public async Task<Stade> CreateAsync(Stade stade)
+        public async Task<State> CreateAsync(State stade)
         {
             try
             {
-                await _context.Set<Stade>().AddAsync(stade);
+                await _context.Set<State>().AddAsync(stade);
                 await _context.SaveChangesAsync();
                 return stade;
             }
@@ -79,11 +79,11 @@ namespace Data
         /// </summary>
         /// <param name="stade">Objeto con la información actualizada.</param>
         /// <returns>True si la operación fue exitosa, False en caso contrario.</returns>
-        public async Task<bool> UpdateAsync(Stade stade)
+        public async Task<bool> UpdateAsync(State stade)
         {
             try
             {
-                _context.Set<Stade>().Update(stade);
+                _context.Set<State>().Update(stade);
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -103,11 +103,11 @@ namespace Data
         {
             try
             {
-                var stade = await _context.Set<Stade>().FindAsync(id);
+                var stade = await _context.Set<State>().FindAsync(id);
                 if (stade == null)
                     return false;
 
-                _context.Set<Stade>().Remove(stade);
+                _context.Set<State>().Remove(stade);
                 await _context.SaveChangesAsync();
                 return true;
             }
