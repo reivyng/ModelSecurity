@@ -5,11 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de procesos de instructores de aprendices en el sistema
+    /// Controlador para la gestión de AprendizProcessInstructor en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +21,8 @@ namespace Web.Controllers
         private readonly ILogger<AprendizProcessInstructorController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de procesos de instructores de aprendices
+        /// Constructor del controlador de AprendizProcessInstructor
         /// </summary>
-        /// <param name="aprendizProcessInstructorBusiness">Capa de negocio de procesos de instructores de aprendices</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public AprendizProcessInstructorController(AprendizProcessInstructorBusiness aprendizProcessInstructorBusiness, ILogger<AprendizProcessInstructorController> logger)
         {
             _aprendizProcessInstructorBusiness = aprendizProcessInstructorBusiness;
@@ -31,13 +30,10 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los procesos de instructores de aprendices del sistema
+        /// Obtiene todos los procesos de aprendiz con instructor en el sistema
         /// </summary>
-        /// <returns>Lista de procesos de instructores de aprendices</returns>
-        /// <response code="200">Retorna la lista de procesos de instructores de aprendices</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<AprendizProcessInstructorDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<AprendizProcessInstructorDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllAprendizProcessInstructors()
         {
@@ -48,22 +44,16 @@ namespace Web.Controllers
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener procesos de instructores de aprendices");
+                _logger.LogError(ex, "Error al obtener procesos de aprendiz con instructor");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene un proceso de instructor de aprendiz específico por su ID
+        /// Obtiene un proceso de aprendiz con instructor específico por su ID
         /// </summary>
-        /// <param name="id">ID del proceso de instructor de aprendiz</param>
-        /// <returns>Proceso de instructor de aprendiz solicitado</returns>
-        /// <response code="200">Retorna el proceso de instructor de aprendiz solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Proceso de instructor de aprendiz no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(AprendizProcessInstructorDTO), 200)]
+        [ProducesResponseType(typeof(AprendizProcessInstructorDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -76,34 +66,29 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para el proceso de instructor de aprendiz con ID: {AprendizProcessInstructorId}", id);
+                _logger.LogWarning(ex, "Validación fallida para el proceso de aprendiz con instructor con ID: {AprendizProcessInstructorId}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Proceso de instructor de aprendiz no encontrado con ID: {AprendizProcessInstructorId}", id);
+                _logger.LogInformation(ex, "Proceso de aprendiz con instructor no encontrado con ID: {AprendizProcessInstructorId}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener proceso de instructor de aprendiz con ID: {AprendizProcessInstructorId}", id);
+                _logger.LogError(ex, "Error al obtener proceso de aprendiz con instructor con ID: {AprendizProcessInstructorId}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Crea un nuevo proceso de instructor de aprendiz en el sistema
+        /// Crea un nuevo proceso de aprendiz con instructor en el sistema
         /// </summary>
-        /// <param name="aprendizProcessInstructorDto">Datos del proceso de instructor de aprendiz a crear</param>
-        /// <returns>Proceso de instructor de aprendiz creado</returns>
-        /// <response code="201">Retorna el proceso de instructor de aprendiz creado</response>
-        /// <response code="400">Datos del proceso de instructor de aprendiz no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(AprendizProcessInstructorDTO), 201)]
+        [ProducesResponseType(typeof(AprendizProcessInstructorDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateAprendizProcessInstructor([FromBody] AprendizProcessInstructorDTO aprendizProcessInstructorDto)
+        public async Task<IActionResult> CreateAprendizProcessInstructor([FromBody] AprendizProcessInstructorDto aprendizProcessInstructorDto)
         {
             try
             {
@@ -112,12 +97,12 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida al crear proceso de instructor de aprendiz");
+                _logger.LogWarning(ex, "Validación fallida al crear proceso de aprendiz con instructor");
                 return BadRequest(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al crear proceso de instructor de aprendiz");
+                _logger.LogError(ex, "Error al crear proceso de aprendiz con instructor");
                 return StatusCode(500, new { message = ex.Message });
             }
         }

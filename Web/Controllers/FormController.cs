@@ -39,7 +39,7 @@ namespace Web.Controllers
         /// <response code="200">Retorna la lista de formularios</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<FormDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<FormDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllForms()
         {
@@ -65,7 +65,7 @@ namespace Web.Controllers
         /// <response code="404">Formulario no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(FormDTO), 200)]
+        [ProducesResponseType(typeof(FormDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -102,10 +102,10 @@ namespace Web.Controllers
         /// <response code="400">Datos del formulario no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(FormDTO), 201)]
+        [ProducesResponseType(typeof(FormDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateForm([FromBody] FormDTO formDto)
+        public async Task<IActionResult> CreateForm([FromBody] FormDto formDto)
         {
             try
             {

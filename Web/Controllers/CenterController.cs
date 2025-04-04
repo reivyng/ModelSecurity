@@ -5,11 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de centros en el sistema
+    /// Controlador para la gestión de Center en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +21,8 @@ namespace Web.Controllers
         private readonly ILogger<CenterController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de centros
+        /// Constructor del controlador de Center
         /// </summary>
-        /// <param name="centerBusiness">Capa de negocio de centros</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public CenterController(CenterBusiness centerBusiness, ILogger<CenterController> logger)
         {
             _centerBusiness = centerBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los centros del sistema
         /// </summary>
-        /// <returns>Lista de centros</returns>
-        /// <response code="200">Retorna la lista de centros</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CenterDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<CenterDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllCenters()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un centro específico por su ID
         /// </summary>
-        /// <param name="id">ID del centro</param>
-        /// <returns>Centro solicitado</returns>
-        /// <response code="200">Retorna el centro solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Centro no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(CenterDTO), 200)]
+        [ProducesResponseType(typeof(CenterDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo centro en el sistema
         /// </summary>
-        /// <param name="centerDto">Datos del centro a crear</param>
-        /// <returns>Centro creado</returns>
-        /// <response code="201">Retorna el centro creado</response>
-        /// <response code="400">Datos del centro no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(CenterDTO), 201)]
+        [ProducesResponseType(typeof(CenterDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateCenter([FromBody] CenterDTO centerDto)
+        public async Task<IActionResult> CreateCenter([FromBody] CenterDto centerDto)
         {
             try
             {
@@ -123,4 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-

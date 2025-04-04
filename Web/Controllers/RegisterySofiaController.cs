@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -22,8 +23,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de registros de Sofia
         /// </summary>
-        /// <param name="registerySofiaBusiness">Capa de negocio de registros de Sofia</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public RegisterySofiaController(RegisterySofiaBusiness registerySofiaBusiness, ILogger<RegisterySofiaController> logger)
         {
             _registerySofiaBusiness = registerySofiaBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los registros de Sofia del sistema
         /// </summary>
-        /// <returns>Lista de registros de Sofia</returns>
-        /// <response code="200">Retorna la lista de registros de Sofia</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<RegisterySofiaDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<RegisterySofiaDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllRegisterySofias()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un registro de Sofia específico por su ID
         /// </summary>
-        /// <param name="id">ID del registro de Sofia</param>
-        /// <returns>Registro de Sofia solicitado</returns>
-        /// <response code="200">Retorna el registro de Sofia solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Registro de Sofia no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RegisterySofiaDTO), 200)]
+        [ProducesResponseType(typeof(RegisterySofiaDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo registro de Sofia en el sistema
         /// </summary>
-        /// <param name="registerySofiaDto">Datos del registro de Sofia a crear</param>
-        /// <returns>Registro de Sofia creado</returns>
-        /// <response code="201">Retorna el registro de Sofia creado</response>
-        /// <response code="400">Datos del registro de Sofia no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RegisterySofiaDTO), 201)]
+        [ProducesResponseType(typeof(RegisterySofiaDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRegisterySofia([FromBody] RegisterySofiaDTO registerySofiaDto)
+        public async Task<IActionResult> CreateRegisterySofia([FromBody] RegisterySofiaDto registerySofiaDto)
         {
             try
             {
@@ -123,9 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-
-
-
-
-
-

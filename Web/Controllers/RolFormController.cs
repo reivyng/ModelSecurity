@@ -1,15 +1,17 @@
 ﻿using Business;
+using Entity.DTOautogestion;
 using Entity.DTOautogestion.pivote;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de relaciones rol-form en el sistema
+    /// Controlador para la gestión de roles de formulario en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +22,8 @@ namespace Web.Controllers
         private readonly ILogger<RolFormController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de relaciones rol-form
+        /// Constructor del controlador de roles de formulario
         /// </summary>
-        /// <param name="rolFormBusiness">Capa de negocio de relaciones rol-form</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public RolFormController(RolFormBusiness rolFormBusiness, ILogger<RolFormController> logger)
         {
             _rolFormBusiness = rolFormBusiness;
@@ -31,13 +31,10 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene todas las relaciones rol-form del sistema
+        /// Obtiene todos los roles de formulario del sistema
         /// </summary>
-        /// <returns>Lista de relaciones rol-form</returns>
-        /// <response code="200">Retorna la lista de relaciones rol-form</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<RolFormDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<RolFormDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllRolForms()
         {
@@ -48,22 +45,16 @@ namespace Web.Controllers
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener relaciones rol-form");
+                _logger.LogError(ex, "Error al obtener roles de formulario");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene una relación rol-form específica por su ID
+        /// Obtiene un rol de formulario específico por su ID
         /// </summary>
-        /// <param name="id">ID de la relación rol-form</param>
-        /// <returns>Relación rol-form solicitada</returns>
-        /// <response code="200">Retorna la relación rol-form solicitada</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Relación rol-form no encontrada</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(RolFormDTO), 200)]
+        [ProducesResponseType(typeof(RolFormDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -76,34 +67,29 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para la relación rol-form con ID: {RolFormId}", id);
+                _logger.LogWarning(ex, "Validación fallida para el rol de formulario con ID: {RolFormId}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Relación rol-form no encontrada con ID: {RolFormId}", id);
+                _logger.LogInformation(ex, "Rol de formulario no encontrado con ID: {RolFormId}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener relación rol-form con ID: {RolFormId}", id);
+                _logger.LogError(ex, "Error al obtener rol de formulario con ID: {RolFormId}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Crea una nueva relación rol-form en el sistema
+        /// Crea un nuevo rol de formulario en el sistema
         /// </summary>
-        /// <param name="rolFormDto">Datos de la relación a crear</param>
-        /// <returns>Relación rol-form creada</returns>
-        /// <response code="201">Retorna la relación rol-form creada</response>
-        /// <response code="400">Datos de la relación no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(RolFormDTO), 201)]
+        [ProducesResponseType(typeof(RolFormDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateRolForm([FromBody] RolFormDTO rolFormDto)
+        public async Task<IActionResult> CreateRolForm([FromBody] RolFormDto rolFormDto)
         {
             try
             {
@@ -112,12 +98,12 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida al crear relación rol-form");
+                _logger.LogWarning(ex, "Validación fallida al crear rol de formulario");
                 return BadRequest(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al crear relación rol-form");
+                _logger.LogError(ex, "Error al crear rol de formulario");
                 return StatusCode(500, new { message = ex.Message });
             }
         }

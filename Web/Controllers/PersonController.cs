@@ -40,13 +40,13 @@ namespace Web.Controllers
         /// <response code="200">Retorna la lista de personas</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<PersonDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<PersonDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllPersons()
         {
             try
             {
-                var persons = await _PersonBusiness.GetAllPersonAsync();
+                var persons = await _PersonBusiness.GetAllPersonsAsync();
                 return Ok(persons);
             }
             catch (ExternalServiceException ex)
@@ -66,7 +66,7 @@ namespace Web.Controllers
         /// <response code="404">Persona no encontrada</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(PersonDTO), 200)]
+        [ProducesResponseType(typeof(PersonDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -77,7 +77,7 @@ namespace Web.Controllers
                 var person = await _PersonBusiness.GetPersonByIdAsync(id);
                 return Ok(person);
             }
-            catch (ValidationException ex)
+            catch (Utilities.Exceptions.ValidationException ex)
             {
                 _logger.LogWarning(ex, "Validación fallida para la persona con ID: {PersonId}", id);
                 return BadRequest(new { message = ex.Message });
@@ -103,10 +103,10 @@ namespace Web.Controllers
         /// <response code="400">Datos de la persona no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(PersonDTO), 201)]
+        [ProducesResponseType(typeof(PersonDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreatePerson([FromBody] PersonDTO personDto)
+        public async Task<IActionResult> CreatePerson([FromBody] PersonDto personDto)
         {
             try
             {

@@ -5,11 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de conceptos en el sistema
+    /// Controlador para la gestión de Concept en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +21,8 @@ namespace Web.Controllers
         private readonly ILogger<ConceptController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de conceptos
+        /// Constructor del controlador de Concept
         /// </summary>
-        /// <param name="conceptBusiness">Capa de negocio de conceptos</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public ConceptController(ConceptBusiness conceptBusiness, ILogger<ConceptController> logger)
         {
             _conceptBusiness = conceptBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los conceptos del sistema
         /// </summary>
-        /// <returns>Lista de conceptos</returns>
-        /// <response code="200">Retorna la lista de conceptos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ConceptDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ConceptDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllConcepts()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un concepto específico por su ID
         /// </summary>
-        /// <param name="id">ID del concepto</param>
-        /// <returns>Concepto solicitado</returns>
-        /// <response code="200">Retorna el concepto solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Concepto no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ConceptDTO), 200)]
+        [ProducesResponseType(typeof(ConceptDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo concepto en el sistema
         /// </summary>
-        /// <param name="conceptDto">Datos del concepto a crear</param>
-        /// <returns>Concepto creado</returns>
-        /// <response code="201">Retorna el concepto creado</response>
-        /// <response code="400">Datos del concepto no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ConceptDTO), 201)]
+        [ProducesResponseType(typeof(ConceptDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateConcept([FromBody] ConceptDTO conceptDto)
+        public async Task<IActionResult> CreateConcept([FromBody] ConceptDto conceptDto)
         {
             try
             {
@@ -123,4 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-

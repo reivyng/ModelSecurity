@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de usuarios y sedes en el sistema
+    /// Controlador para la gestión de asociaciones usuario-sede en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -21,10 +22,8 @@ namespace Web.Controllers
         private readonly ILogger<UserSedeController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de usuarios y sedes
+        /// Constructor del controlador de usuario-sede
         /// </summary>
-        /// <param name="userSedeBusiness">Capa de negocio de usuarios y sedes</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public UserSedeController(UserSedeBusiness userSedeBusiness, ILogger<UserSedeController> logger)
         {
             _userSedeBusiness = userSedeBusiness;
@@ -32,13 +31,10 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los usuarios y sedes del sistema
+        /// Obtiene todas las asociaciones usuario-sede del sistema
         /// </summary>
-        /// <returns>Lista de usuarios y sedes</returns>
-        /// <response code="200">Retorna la lista de usuarios y sedes</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<UserSedeDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<UserSedeDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllUserSedes()
         {
@@ -49,22 +45,16 @@ namespace Web.Controllers
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener usuarios y sedes");
+                _logger.LogError(ex, "Error al obtener asociaciones usuario-sede");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene un usuario o sede específico por su ID
+        /// Obtiene una asociación usuario-sede específica por su ID
         /// </summary>
-        /// <param name="id">ID del usuario o sede</param>
-        /// <returns>Usuario o sede solicitado</returns>
-        /// <response code="200">Retorna el usuario o sede solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Usuario o sede no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(UserSedeDTO), 200)]
+        [ProducesResponseType(typeof(UserSedeDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -77,34 +67,29 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para el usuario o sede con ID: {UserSedeId}", id);
+                _logger.LogWarning(ex, "Validación fallida para la asociación usuario-sede con ID: {UserSedeId}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Usuario o sede no encontrado con ID: {UserSedeId}", id);
+                _logger.LogInformation(ex, "Asociación usuario-sede no encontrada con ID: {UserSedeId}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener usuario o sede con ID: {UserSedeId}", id);
+                _logger.LogError(ex, "Error al obtener asociación usuario-sede con ID: {UserSedeId}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Crea un nuevo usuario o sede en el sistema
+        /// Crea una nueva asociación usuario-sede en el sistema
         /// </summary>
-        /// <param name="userSedeDto">Datos del usuario o sede a crear</param>
-        /// <returns>Usuario o sede creado</returns>
-        /// <response code="201">Retorna el usuario o sede creado</response>
-        /// <response code="400">Datos del usuario o sede no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(UserSedeDTO), 201)]
+        [ProducesResponseType(typeof(UserSedeDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateUserSede([FromBody] UserSedeDTO userSedeDto)
+        public async Task<IActionResult> CreateUserSede([FromBody] UserSedeDto userSedeDto)
         {
             try
             {
@@ -113,12 +98,12 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida al crear usuario o sede");
+                _logger.LogWarning(ex, "Validación fallida al crear asociación usuario-sede");
                 return BadRequest(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al crear usuario o sede");
+                _logger.LogError(ex, "Error al crear asociación usuario-sede");
                 return StatusCode(500, new { message = ex.Message });
             }
         }

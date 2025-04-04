@@ -5,11 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de empresas en el sistema
+    /// Controlador para la gestión de Enterprise en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +21,8 @@ namespace Web.Controllers
         private readonly ILogger<EnterpriseController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de empresas
+        /// Constructor del controlador de Enterprise
         /// </summary>
-        /// <param name="enterpriseBusiness">Capa de negocio de empresas</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public EnterpriseController(EnterpriseBusiness enterpriseBusiness, ILogger<EnterpriseController> logger)
         {
             _enterpriseBusiness = enterpriseBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todas las empresas del sistema
         /// </summary>
-        /// <returns>Lista de empresas</returns>
-        /// <response code="200">Retorna la lista de empresas</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<EnterpriseDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<EnterpriseDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllEnterprises()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene una empresa específica por su ID
         /// </summary>
-        /// <param name="id">ID de la empresa</param>
-        /// <returns>Empresa solicitada</returns>
-        /// <response code="200">Retorna la empresa solicitada</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Empresa no encontrada</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(EnterpriseDTO), 200)]
+        [ProducesResponseType(typeof(EnterpriseDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea una nueva empresa en el sistema
         /// </summary>
-        /// <param name="enterpriseDto">Datos de la empresa a crear</param>
-        /// <returns>Empresa creada</returns>
-        /// <response code="201">Retorna la empresa creada</response>
-        /// <response code="400">Datos de la empresa no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(EnterpriseDTO), 201)]
+        [ProducesResponseType(typeof(EnterpriseDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateEnterprise([FromBody] EnterpriseDTO enterpriseDto)
+        public async Task<IActionResult> CreateEnterprise([FromBody] EnterpriseDto enterpriseDto)
         {
             try
             {
@@ -123,5 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-
-

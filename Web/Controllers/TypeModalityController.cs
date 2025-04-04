@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -22,8 +23,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de modalidades
         /// </summary>
-        /// <param name="typeModalityBusiness">Capa de negocio de modalidades</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public TypeModalityController(TypeModalityBusiness typeModalityBusiness, ILogger<TypeModalityController> logger)
         {
             _typeModalityBusiness = typeModalityBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todas las modalidades del sistema
         /// </summary>
-        /// <returns>Lista de modalidades</returns>
-        /// <response code="200">Retorna la lista de modalidades</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<TypeModalityDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<TypeModalityDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllTypeModalities()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene una modalidad específica por su ID
         /// </summary>
-        /// <param name="id">ID de la modalidad</param>
-        /// <returns>Modalidad solicitada</returns>
-        /// <response code="200">Retorna la modalidad solicitada</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Modalidad no encontrada</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(TypeModalityDTO), 200)]
+        [ProducesResponseType(typeof(TypeModalityDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea una nueva modalidad en el sistema
         /// </summary>
-        /// <param name="typeModalityDto">Datos de la modalidad a crear</param>
-        /// <returns>Modalidad creada</returns>
-        /// <response code="201">Retorna la modalidad creada</response>
-        /// <response code="400">Datos de la modalidad no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(TypeModalityDTO), 201)]
+        [ProducesResponseType(typeof(TypeModalityDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateTypeModality([FromBody] TypeModalityDTO typeModalityDto)
+        public async Task<IActionResult> CreateTypeModality([FromBody] TypeModalityDto typeModalityDto)
         {
             try
             {

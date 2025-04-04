@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de programas de instructores en el sistema
+    /// Controlador para la gestión de instructorProgram en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -21,10 +22,8 @@ namespace Web.Controllers
         private readonly ILogger<InstructorProgramController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de programas de instructores
+        /// Constructor del controlador de instructorProgram
         /// </summary>
-        /// <param name="instructorProgramBusiness">Capa de negocio de programas de instructores</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public InstructorProgramController(InstructorProgramBusiness instructorProgramBusiness, ILogger<InstructorProgramController> logger)
         {
             _instructorProgramBusiness = instructorProgramBusiness;
@@ -32,13 +31,10 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// Obtiene todos los programas de instructores del sistema
+        /// Obtiene todos los instructorPrograms del sistema
         /// </summary>
-        /// <returns>Lista de programas de instructores</returns>
-        /// <response code="200">Retorna la lista de programas de instructores</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<InstructorProgramDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<InstructorProgramDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllInstructorPrograms()
         {
@@ -49,22 +45,16 @@ namespace Web.Controllers
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener programas de instructores");
+                _logger.LogError(ex, "Error al obtener instructorPrograms");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene un programa de instructor específico por su ID
+        /// Obtiene un instructorProgram específico por su ID
         /// </summary>
-        /// <param name="id">ID del programa de instructor</param>
-        /// <returns>Programa de instructor solicitado</returns>
-        /// <response code="200">Retorna el programa de instructor solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Programa de instructor no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(InstructorProgramDTO), 200)]
+        [ProducesResponseType(typeof(InstructorProgramDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -77,34 +67,29 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para el programa de instructor con ID: {InstructorProgramId}", id);
+                _logger.LogWarning(ex, "Validación fallida para el instructorProgram con ID: {InstructorProgramId}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Programa de instructor no encontrado con ID: {InstructorProgramId}", id);
+                _logger.LogInformation(ex, "InstructorProgram no encontrado con ID: {InstructorProgramId}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener programa de instructor con ID: {InstructorProgramId}", id);
+                _logger.LogError(ex, "Error al obtener instructorProgram con ID: {InstructorProgramId}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Crea un nuevo programa de instructor en el sistema
+        /// Crea un nuevo instructorProgram en el sistema
         /// </summary>
-        /// <param name="instructorProgramDto">Datos del programa de instructor a crear</param>
-        /// <returns>Programa de instructor creado</returns>
-        /// <response code="201">Retorna el programa de instructor creado</response>
-        /// <response code="400">Datos del programa de instructor no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(InstructorProgramDTO), 201)]
+        [ProducesResponseType(typeof(InstructorProgramDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateInstructorProgram([FromBody] InstructorProgramDTO instructorProgramDto)
+        public async Task<IActionResult> CreateInstructorProgram([FromBody] InstructorProgramDto instructorProgramDto)
         {
             try
             {
@@ -113,17 +98,14 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida al crear programa de instructor");
+                _logger.LogWarning(ex, "Validación fallida al crear instructorProgram");
                 return BadRequest(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al crear programa de instructor");
+                _logger.LogError(ex, "Error al crear instructorProgram");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
     }
 }
-
-
-

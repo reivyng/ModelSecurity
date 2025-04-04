@@ -10,99 +10,99 @@ using ValidationException = Utilities.Exceptions.ValidationException;
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de sedes en el sistema
+    /// Controlador para la gestión de estados en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    public class SedeController : ControllerBase
+    public class StateController : ControllerBase
     {
-        private readonly SedeBusiness _sedeBusiness;
-        private readonly ILogger<SedeController> _logger;
+        private readonly StateBusiness _stateBusiness;
+        private readonly ILogger<StateController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de sedes
+        /// Constructor del controlador de estados
         /// </summary>
-        public SedeController(SedeBusiness sedeBusiness, ILogger<SedeController> logger)
+        public StateController(StateBusiness stateBusiness, ILogger<StateController> logger)
         {
-            _sedeBusiness = sedeBusiness;
+            _stateBusiness = stateBusiness;
             _logger = logger;
         }
 
         /// <summary>
-        /// Obtiene todas las sedes del sistema
+        /// Obtiene todos los estados del sistema
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<SedeDto>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<StateDto>), 200)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetAllSedes()
+        public async Task<IActionResult> GetAllStates()
         {
             try
             {
-                var sedes = await _sedeBusiness.GetAllSedesAsync();
-                return Ok(sedes);
+                var states = await _stateBusiness.GetAllStatesAsync();
+                return Ok(states);
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener sedes");
+                _logger.LogError(ex, "Error al obtener estados");
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Obtiene una sede específica por su ID
+        /// Obtiene un estado específico por su ID
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(SedeDto), 200)]
+        [ProducesResponseType(typeof(StateDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GetSedeById(int id)
+        public async Task<IActionResult> GetStateById(int id)
         {
             try
             {
-                var sede = await _sedeBusiness.GetSedeByIdAsync(id);
-                return Ok(sede);
+                var state = await _stateBusiness.GetStateByIdAsync(id);
+                return Ok(state);
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para la sede con ID: {SedeId}", id);
+                _logger.LogWarning(ex, "Validación fallida para el estado con ID: {StateId}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Sede no encontrada con ID: {SedeId}", id);
+                _logger.LogInformation(ex, "Estado no encontrado con ID: {StateId}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener sede con ID: {SedeId}", id);
+                _logger.LogError(ex, "Error al obtener estado con ID: {StateId}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
         /// <summary>
-        /// Crea una nueva sede en el sistema
+        /// Crea un nuevo estado en el sistema
         /// </summary>
         [HttpPost]
-        [ProducesResponseType(typeof(SedeDto), 201)]
+        [ProducesResponseType(typeof(StateDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateSede([FromBody] SedeDto sedeDto)
+        public async Task<IActionResult> CreateState([FromBody] StateDto stateDto)
         {
             try
             {
-                var createdSede = await _sedeBusiness.CreateSedeAsync(sedeDto);
-                return CreatedAtAction(nameof(GetSedeById), new { id = createdSede.Id }, createdSede);
+                var createdState = await _stateBusiness.CreateStateAsync(stateDto);
+                return CreatedAtAction(nameof(GetStateById), new { id = createdState.Id }, createdState);
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida al crear sede");
+                _logger.LogWarning(ex, "Validación fallida al crear estado");
                 return BadRequest(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al crear sede");
+                _logger.LogError(ex, "Error al crear estado");
                 return StatusCode(500, new { message = ex.Message });
             }
         }

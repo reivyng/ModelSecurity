@@ -1,7 +1,6 @@
 ﻿using Business;
 using Data;
 using Entity.DTOautogestion;
-using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -36,7 +35,7 @@ namespace Web.Controllers
         /// Obtiene todos los usuarios del sistema
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -56,7 +55,7 @@ namespace Web.Controllers
         /// Obtiene un usuario específico por su ID
         /// </summary>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(UserDTO), 200)]
+        [ProducesResponseType(typeof(UserDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -88,10 +87,10 @@ namespace Web.Controllers
         /// Crea un nuevo usuario en el sistema
         /// </summary>
         [HttpPost]
-        [ProducesResponseType(typeof(UserDTO), 201)]
+        [ProducesResponseType(typeof(UserDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateUser([FromBody] UserDTO UserDto)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto UserDto)
         {
             try
             {

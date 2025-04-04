@@ -41,7 +41,7 @@ namespace Web.Controllers
         /// <response code="200">Retorna la lista de módulos de formularios</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<FormModuleDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<FormModuleDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllFormModules()
         {
@@ -67,7 +67,7 @@ namespace Web.Controllers
         /// <response code="404">Módulo de formulario no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(FormModuleDTO), 200)]
+        [ProducesResponseType(typeof(FormModuleDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -78,7 +78,7 @@ namespace Web.Controllers
                 var formModule = await _FormModuleBusiness.GetFormModuleByIdAsync(id);
                 return Ok(formModule);
             }
-            catch (Utilities.Exceptions.ValidationException ex)
+            catch (ValidationException ex)
             {
                 _logger.LogWarning(ex, "Validación fallida para el módulo de formulario con ID: {FormModuleId}", id);
                 return BadRequest(new { message = ex.Message });
@@ -104,10 +104,10 @@ namespace Web.Controllers
         /// <response code="400">Datos del módulo de formulario no válidos</response>
         /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(FormModuleDTO), 201)]
+        [ProducesResponseType(typeof(FormModuleDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateFormModule([FromBody] FormModuleDTO formModuleDto)
+        public async Task<IActionResult> CreateFormModule([FromBody] FormModuleDto formModuleDto)
         {
             try
             {

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -22,8 +23,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de procesos
         /// </summary>
-        /// <param name="processBusiness">Capa de negocio de procesos</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public ProcessController(ProcessBusiness processBusiness, ILogger<ProcessController> logger)
         {
             _processBusiness = processBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los procesos del sistema
         /// </summary>
-        /// <returns>Lista de procesos</returns>
-        /// <response code="200">Retorna la lista de procesos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProcessDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ProcessDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllProcesses()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un proceso específico por su ID
         /// </summary>
-        /// <param name="id">ID del proceso</param>
-        /// <returns>Proceso solicitado</returns>
-        /// <response code="200">Retorna el proceso solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Proceso no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ProcessDTO), 200)]
+        [ProducesResponseType(typeof(ProcessDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo proceso en el sistema
         /// </summary>
-        /// <param name="processDto">Datos del proceso a crear</param>
-        /// <returns>Proceso creado</returns>
-        /// <response code="201">Retorna el proceso creado</response>
-        /// <response code="400">Datos del proceso no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ProcessDTO), 201)]
+        [ProducesResponseType(typeof(ProcessDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateProcess([FromBody] ProcessDTO processDto)
+        public async Task<IActionResult> CreateProcess([FromBody] ProcessDto processDto)
         {
             try
             {
@@ -123,6 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-
-
-

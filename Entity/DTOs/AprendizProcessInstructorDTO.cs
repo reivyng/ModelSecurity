@@ -16,7 +16,7 @@ namespace Entity.DTOautogestion
         public int EnterpriseId { get; set; }
         public int ProcessId { get; set; }
         public int TypeModalityId { get; set; }
-        public int StadeId { get; set; }
+        public int StateId { get; set; }
         public int VerificationId { get; set; }
     }
 }

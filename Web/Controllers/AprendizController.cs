@@ -1,11 +1,13 @@
 ﻿using Business;
+using Data;
 using Entity.DTOautogestion;
-using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -23,8 +25,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de aprendices
         /// </summary>
-        /// <param name="AprendizBusiness">Capa de negocio de aprendices</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public AprendizController(AprendizBusiness AprendizBusiness, ILogger<AprendizController> logger)
         {
             _AprendizBusiness = AprendizBusiness;
@@ -34,17 +34,14 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los aprendices del sistema
         /// </summary>
-        /// <returns>Lista de aprendices</returns>
-        /// <response code="200">Retorna la lista de aprendices</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<AprendizDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<AprendizDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllAprendices()
         {
             try
             {
-                var aprendices = await _AprendizBusiness.GetAllAprendicesAsync();
+                var aprendices = await _AprendizBusiness.GetAllAprendizAsync();
                 return Ok(aprendices);
             }
             catch (ExternalServiceException ex)
@@ -57,14 +54,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un aprendiz específico por su ID
         /// </summary>
-        /// <param name="id">ID del aprendiz</param>
-        /// <returns>Aprendiz solicitado</returns>
-        /// <response code="200">Retorna el aprendiz solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Aprendiz no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(AprendizDTO), 200)]
+        [ProducesResponseType(typeof(AprendizDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -77,17 +68,17 @@ namespace Web.Controllers
             }
             catch (ValidationException ex)
             {
-                _logger.LogWarning(ex, "Validación fallida para el aprendiz con ID: {AprendizId}", id);
+                _logger.LogWarning(ex, "Validación fallida para el aprendiz con ID: {Id}", id);
                 return BadRequest(new { message = ex.Message });
             }
             catch (EntityNotFoundException ex)
             {
-                _logger.LogInformation(ex, "Aprendiz no encontrado con ID: {AprendizId}", id);
+                _logger.LogInformation(ex, "aprenidz no encontrado con ID: {Id}", id);
                 return NotFound(new { message = ex.Message });
             }
             catch (ExternalServiceException ex)
             {
-                _logger.LogError(ex, "Error al obtener aprendiz con ID: {AprendizId}", id);
+                _logger.LogError(ex, "Error al obtener aprendiz con ID: {Id}", id);
                 return StatusCode(500, new { message = ex.Message });
             }
         }
@@ -95,16 +86,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo aprendiz en el sistema
         /// </summary>
-        /// <param name="AprendizDto">Datos del aprendiz a crear</param>
-        /// <returns>Aprendiz creado</returns>
-        /// <response code="201">Retorna el aprendiz creado</response>
-        /// <response code="400">Datos del aprendiz no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(AprendizDTO), 201)]
+        [ProducesResponseType(typeof(AprendizDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateAprendiz([FromBody] AprendizDTO AprendizDto)
+        public async Task<IActionResult> CreateAprendiz([FromBody] AprendizDto AprendizDto)
         {
             try
             {

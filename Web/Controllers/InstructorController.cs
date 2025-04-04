@@ -5,11 +5,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
     /// <summary>
-    /// Controlador para la gestión de instructores en el sistema
+    /// Controlador para la gestión de Instructor en el sistema
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
@@ -20,10 +21,8 @@ namespace Web.Controllers
         private readonly ILogger<InstructorController> _logger;
 
         /// <summary>
-        /// Constructor del controlador de instructores
+        /// Constructor del controlador de Instructor
         /// </summary>
-        /// <param name="instructorBusiness">Capa de negocio de instructores</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public InstructorController(InstructorBusiness instructorBusiness, ILogger<InstructorController> logger)
         {
             _instructorBusiness = instructorBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los instructores del sistema
         /// </summary>
-        /// <returns>Lista de instructores</returns>
-        /// <response code="200">Retorna la lista de instructores</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<InstructorDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<InstructorDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllInstructors()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un instructor específico por su ID
         /// </summary>
-        /// <param name="id">ID del instructor</param>
-        /// <returns>Instructor solicitado</returns>
-        /// <response code="200">Retorna el instructor solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Instructor no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(InstructorDTO), 200)]
+        [ProducesResponseType(typeof(InstructorDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo instructor en el sistema
         /// </summary>
-        /// <param name="instructorDto">Datos del instructor a crear</param>
-        /// <returns>Instructor creado</returns>
-        /// <response code="201">Retorna el instructor creado</response>
-        /// <response code="400">Datos del instructor no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(InstructorDTO), 201)]
+        [ProducesResponseType(typeof(InstructorDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateInstructor([FromBody] InstructorDTO instructorDto)
+        public async Task<IActionResult> CreateInstructor([FromBody] InstructorDto instructorDto)
         {
             try
             {
@@ -123,5 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-
-

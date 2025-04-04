@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -22,8 +23,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de programas
         /// </summary>
-        /// <param name="programBusiness">Capa de negocio de programas</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public ProgramController(ProgramBusiness programBusiness, ILogger<ProgramController> logger)
         {
             _programBusiness = programBusiness;
@@ -33,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todos los programas del sistema
         /// </summary>
-        /// <returns>Lista de programas</returns>
-        /// <response code="200">Retorna la lista de programas</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ProgramDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ProgramDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllPrograms()
         {
@@ -56,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene un programa específico por su ID
         /// </summary>
-        /// <param name="id">ID del programa</param>
-        /// <returns>Programa solicitado</returns>
-        /// <response code="200">Retorna el programa solicitado</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Programa no encontrado</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(ProgramDTO), 200)]
+        [ProducesResponseType(typeof(ProgramDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -94,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea un nuevo programa en el sistema
         /// </summary>
-        /// <param name="programDto">Datos del programa a crear</param>
-        /// <returns>Programa creado</returns>
-        /// <response code="201">Retorna el programa creado</response>
-        /// <response code="400">Datos del programa no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(ProgramDTO), 201)]
+        [ProducesResponseType(typeof(ProgramDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateProgram([FromBody] ProgramDTO programDto)
+        public async Task<IActionResult> CreateProgram([FromBody] ProgramDto programDto)
         {
             try
             {
@@ -123,7 +108,3 @@ namespace Web.Controllers
         }
     }
 }
-
-
-
-

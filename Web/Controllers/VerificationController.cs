@@ -1,11 +1,11 @@
 ﻿using Business;
 using Entity.DTOautogestion;
-using Entity.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Web.Controllers
 {
@@ -23,8 +23,6 @@ namespace Web.Controllers
         /// <summary>
         /// Constructor del controlador de verificaciones
         /// </summary>
-        /// <param name="verificationBusiness">Capa de negocio de verificaciones</param>
-        /// <param name="logger">Logger para registro de eventos</param>
         public VerificationController(VerificationBusiness verificationBusiness, ILogger<VerificationController> logger)
         {
             _verificationBusiness = verificationBusiness;
@@ -34,11 +32,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene todas las verificaciones del sistema
         /// </summary>
-        /// <returns>Lista de verificaciones</returns>
-        /// <response code="200">Retorna la lista de verificaciones</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<VerificationDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<VerificationDto>), 200)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllVerifications()
         {
@@ -57,14 +52,8 @@ namespace Web.Controllers
         /// <summary>
         /// Obtiene una verificación específica por su ID
         /// </summary>
-        /// <param name="id">ID de la verificación</param>
-        /// <returns>Verificación solicitada</returns>
-        /// <response code="200">Retorna la verificación solicitada</response>
-        /// <response code="400">ID proporcionado no válido</response>
-        /// <response code="404">Verificación no encontrada</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(VerificationDTO), 200)]
+        [ProducesResponseType(typeof(VerificationDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
@@ -95,16 +84,11 @@ namespace Web.Controllers
         /// <summary>
         /// Crea una nueva verificación en el sistema
         /// </summary>
-        /// <param name="verificationDto">Datos de la verificación a crear</param>
-        /// <returns>Verificación creada</returns>
-        /// <response code="201">Retorna la verificación creada</response>
-        /// <response code="400">Datos de la verificación no válidos</response>
-        /// <response code="500">Error interno del servidor</response>
         [HttpPost]
-        [ProducesResponseType(typeof(VerificationDTO), 201)]
+        [ProducesResponseType(typeof(VerificationDto), 201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> CreateVerification([FromBody] VerificationDTO verificationDto)
+        public async Task<IActionResult> CreateVerification([FromBody] VerificationDto verificationDto)
         {
             try
             {
