@@ -28,19 +28,7 @@ namespace Business
             try
             {
                 var instructorPrograms = await _instructorProgramData.GetAllAsync();
-                var instructorProgramsDTO = new List<InstructorProgramDto>();
-
-                foreach (var instructorProgram in instructorPrograms)
-                {
-                    instructorProgramsDTO.Add(new InstructorProgramDto
-                    {
-                        Id = instructorProgram.Id,
-                        InstructorId = instructorProgram.InstructorId,
-                        ProgramId = instructorProgram.ProgramId,
-                    });
-                }
-
-                return instructorProgramsDTO;
+                return MapToDTOList(instructorPrograms);
             }
             catch (Exception ex)
             {
@@ -67,12 +55,7 @@ namespace Business
                     throw new EntityNotFoundException("instructorProgram", id);
                 }
 
-                return new InstructorProgramDto
-                {
-                    Id = instructorProgram.Id,
-                    InstructorId = instructorProgram.InstructorId,
-                    ProgramId = instructorProgram.ProgramId,
-                };
+                return MapToDTO(instructorProgram);
             }
             catch (Exception ex)
             {
@@ -88,20 +71,11 @@ namespace Business
             {
                 ValidateInstructorProgram(instructorProgramDto);
 
-                var instructorProgram = new InstructorProgram
-                {
-                    InstructorId = instructorProgramDto.InstructorId,
-                    ProgramId = instructorProgramDto.ProgramId
-                };
+                var instructorProgram = MapToEntity(instructorProgramDto);
 
                 var instructorProgramCreado = await _instructorProgramData.CreateAsync(instructorProgram);
 
-                return new InstructorProgramDto
-                {
-                    Id = instructorProgram.Id,
-                    InstructorId = instructorProgram.InstructorId,
-                    ProgramId = instructorProgram.ProgramId,
-                };
+                return MapToDTO(instructorProgramCreado);
             }
             catch (Exception ex)
             {
@@ -130,5 +104,40 @@ namespace Business
                 throw new Utilities.Exceptions.ValidationException("ProgramId", "El ProgramId es obligatorio y debe ser mayor que cero");
             }
         }
+
+        // Método para mapear de InstructorProgram a InstructorProgramDto
+        private InstructorProgramDto MapToDTO(InstructorProgram instructorProgram)
+        {
+            return new InstructorProgramDto
+            {
+                Id = instructorProgram.Id,
+                InstructorId = instructorProgram.InstructorId,
+                ProgramId = instructorProgram.ProgramId,
+            };
+        }
+
+        // Método para mapear de InstructorProgramDto a InstructorProgram
+        private InstructorProgram MapToEntity(InstructorProgramDto instructorProgramDto)
+        {
+            return new InstructorProgram
+            {
+                Id = instructorProgramDto.Id,
+                InstructorId = instructorProgramDto.InstructorId,
+                ProgramId = instructorProgramDto.ProgramId
+            };
+        }
+
+        // Método para mapear una lista de InstructorProgram a una lista de InstructorProgramDto
+        private IEnumerable<InstructorProgramDto> MapToDTOList(IEnumerable<InstructorProgram> instructorPrograms)
+        {
+            var instructorProgramsDTO = new List<InstructorProgramDto>();
+            foreach (var instructorProgram in instructorPrograms)
+            {
+                instructorProgramsDTO.Add(MapToDTO(instructorProgram));
+            }
+            return instructorProgramsDTO;
+        }
     }
 }
+
+

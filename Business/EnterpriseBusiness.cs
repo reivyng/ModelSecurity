@@ -26,24 +26,7 @@ namespace Business
             try
             {
                 var enterprises = await _enterpriseData.GetAllAsync();
-                var enterprisesDTO = new List<EnterpriseDto>();
-
-                foreach (var enterprise in enterprises)
-                {
-                    enterprisesDTO.Add(new EnterpriseDto
-                    {
-                        Id = enterprise.Id,
-                        NameEnterprise = enterprise.NameEnterprise,
-                        NitEnterprise = enterprise.NitEnterprise,
-                        Locate = enterprise.Locate,
-                        Observation = enterprise.Observation,
-                        PhoneEnterprise = enterprise.PhoneEnterprise,
-                        EmailEnterprise = enterprise.EmailEnterprise,
-                        Active = enterprise.Active,
-                    });
-                }
-
-                return enterprisesDTO;
+                return MapToDTOList(enterprises);
             }
             catch (Exception ex)
             {
@@ -70,17 +53,7 @@ namespace Business
                     throw new EntityNotFoundException("enterprise", id);
                 }
 
-                return new EnterpriseDto
-                {
-                    Id = enterprise.Id,
-                    NameEnterprise = enterprise.NameEnterprise,
-                    NitEnterprise = enterprise.NitEnterprise,
-                    Locate = enterprise.Locate,
-                    Observation = enterprise.Observation,
-                    PhoneEnterprise = enterprise.PhoneEnterprise,
-                    EmailEnterprise = enterprise.EmailEnterprise,
-                    Active = enterprise.Active,
-                };
+                return MapToDTO(enterprise);
             }
             catch (Exception ex)
             {
@@ -96,30 +69,11 @@ namespace Business
             {
                 ValidateEnterprise(enterpriseDto);
 
-                var enterprise = new Enterprise
-                {
-                    NameEnterprise = enterpriseDto.NameEnterprise,
-                    NitEnterprise = enterpriseDto.NitEnterprise,
-                    Locate = enterpriseDto.Locate,
-                    Observation = enterpriseDto.Observation,
-                    PhoneEnterprise = enterpriseDto.PhoneEnterprise,
-                    EmailEnterprise = enterpriseDto.EmailEnterprise,
-                    Active = enterpriseDto.Active
-                };
+                var enterprise = MapToEntity(enterpriseDto);
 
                 var enterpriseCreado = await _enterpriseData.CreateAsync(enterprise);
 
-                return new EnterpriseDto
-                {
-                    Id = enterprise.Id,
-                    NameEnterprise = enterprise.NameEnterprise,
-                    NitEnterprise = enterprise.NitEnterprise,
-                    Locate = enterprise.Locate,
-                    Observation = enterprise.Observation,
-                    PhoneEnterprise = enterprise.PhoneEnterprise,
-                    EmailEnterprise = enterprise.EmailEnterprise,
-                    Active = enterprise.Active,
-                };
+                return MapToDTO(enterpriseCreado);
             }
             catch (Exception ex)
             {
@@ -141,6 +95,49 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar una empresa con Name vacío");
                 throw new Utilities.Exceptions.ValidationException("Name", "El Name de la empresa es obligatorio");
             }
+        }
+
+        // Método para mapear de Enterprise a EnterpriseDto
+        private EnterpriseDto MapToDTO(Enterprise enterprise)
+        {
+            return new EnterpriseDto
+            {
+                Id = enterprise.Id,
+                NameEnterprise = enterprise.NameEnterprise,
+                NitEnterprise = enterprise.NitEnterprise,
+                Locate = enterprise.Locate,
+                Observation = enterprise.Observation,
+                PhoneEnterprise = enterprise.PhoneEnterprise,
+                EmailEnterprise = enterprise.EmailEnterprise,
+                Active = enterprise.Active,
+            };
+        }
+
+        // Método para mapear de EnterpriseDto a Enterprise
+        private Enterprise MapToEntity(EnterpriseDto enterpriseDto)
+        {
+            return new Enterprise
+            {
+                Id = enterpriseDto.Id,
+                NameEnterprise = enterpriseDto.NameEnterprise,
+                NitEnterprise = enterpriseDto.NitEnterprise,
+                Locate = enterpriseDto.Locate,
+                Observation = enterpriseDto.Observation,
+                PhoneEnterprise = enterpriseDto.PhoneEnterprise,
+                EmailEnterprise = enterpriseDto.EmailEnterprise,
+                Active = enterpriseDto.Active
+            };
+        }
+
+        // Método para mapear una lista de Enterprise a una lista de EnterpriseDto
+        private IEnumerable<EnterpriseDto> MapToDTOList(IEnumerable<Enterprise> enterprises)
+        {
+            var enterprisesDTO = new List<EnterpriseDto>();
+            foreach (var enterprise in enterprises)
+            {
+                enterprisesDTO.Add(MapToDTO(enterprise));
+            }
+            return enterprisesDTO;
         }
     }
 }

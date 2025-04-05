@@ -28,19 +28,7 @@ namespace Business
             try
             {
                 var rolUsers = await _rolUserData.GetAllAsync();
-                var rolUsersDTO = new List<UserRolDto>();
-
-                foreach (var rolUser in rolUsers)
-                {
-                    rolUsersDTO.Add(new UserRolDto
-                    {
-                        Id = rolUser.Id,
-                        UserId = rolUser.UserId,
-                        RolId = rolUser.RolId
-                    });
-                }
-
-                return rolUsersDTO;
+                return MapToDTOList(rolUsers);
             }
             catch (Exception ex)
             {
@@ -67,12 +55,7 @@ namespace Business
                     throw new EntityNotFoundException("RolUser", id);
                 }
 
-                return new UserRolDto
-                {
-                    Id = rolUser.Id,
-                    UserId = rolUser.UserId,
-                    RolId = rolUser.RolId
-                };
+                return MapToDTO(rolUser);
             }
             catch (Exception ex)
             {
@@ -88,20 +71,11 @@ namespace Business
             {
                 ValidateRolUser(rolUserDto);
 
-                var rolUser = new UserRol
-                {
-                    UserId = rolUserDto.UserId,
-                    RolId = rolUserDto.RolId
-                };
+                var rolUser = MapToEntity(rolUserDto);
 
                 var rolUserCreado = await _rolUserData.CreateAsync(rolUser);
 
-                return new UserRolDto
-                {
-                    Id = rolUser.Id,
-                    UserId = rolUser.UserId,
-                    RolId = rolUser.RolId
-                };
+                return MapToDTO(rolUserCreado);
             }
             catch (Exception ex)
             {
@@ -130,6 +104,38 @@ namespace Business
                 throw new Utilities.Exceptions.ValidationException("RolId", "El RolId del rol de usuario es obligatorio y debe ser mayor que cero");
             }
         }
+
+        // Método para mapear de UserRol a UserRolDto
+        private UserRolDto MapToDTO(UserRol rolUser)
+        {
+            return new UserRolDto
+            {
+                Id = rolUser.Id,
+                UserId = rolUser.UserId,
+                RolId = rolUser.RolId
+            };
+        }
+
+        // Método para mapear de UserRolDto a UserRol
+        private UserRol MapToEntity(UserRolDto rolUserDto)
+        {
+            return new UserRol
+            {
+                Id = rolUserDto.Id,
+                UserId = rolUserDto.UserId,
+                RolId = rolUserDto.RolId
+            };
+        }
+
+        // Método para mapear una lista de UserRol a una lista de UserRolDto
+        private IEnumerable<UserRolDto> MapToDTOList(IEnumerable<UserRol> rolUsers)
+        {
+            var rolUsersDTO = new List<UserRolDto>();
+            foreach (var rolUser in rolUsers)
+            {
+                rolUsersDTO.Add(MapToDTO(rolUser));
+            }
+            return rolUsersDTO;
+        }
     }
 }
-

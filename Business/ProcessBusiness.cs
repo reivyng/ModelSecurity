@@ -27,20 +27,7 @@ namespace Business
             try
             {
                 var processes = await _processData.GetAllAsync();
-                var processesDTO = new List<ProcessDto>();
-
-                foreach (var process in processes)
-                {
-                    processesDTO.Add(new ProcessDto
-                    {
-                        Id = process.Id,
-                        TypeProcess = process.TypeProcess,
-                        Observation = process.Observation,
-                        Active = process.Active // si existe la entidad
-                    });
-                }
-
-                return processesDTO;
+                return MapToDTOList(processes);
             }
             catch (Exception ex)
             {
@@ -67,13 +54,7 @@ namespace Business
                     throw new EntityNotFoundException("process", id);
                 }
 
-                return new ProcessDto
-                {
-                    Id = process.Id,
-                    TypeProcess = process.TypeProcess,
-                    Observation = process.Observation,
-                    Active = process.Active // si existe la entidad
-                };
+                return MapToDTO(process);
             }
             catch (Exception ex)
             {
@@ -89,22 +70,11 @@ namespace Business
             {
                 ValidateProcess(processDto);
 
-                var process = new Process
-                {
-                    TypeProcess = processDto.TypeProcess,
-                    Observation = processDto.Observation,
-                    Active = processDto.Active // si existe la entidad
-                };
+                var process = MapToEntity(processDto);
 
                 var processCreado = await _processData.CreateAsync(process);
 
-                return new ProcessDto
-                {
-                    Id = process.Id,
-                    TypeProcess = process.TypeProcess,
-                    Observation = process.Observation,
-                    Active = process.Active // si existe la entidad
-                };
+                return MapToDTO(processCreado);
             }
             catch (Exception ex)
             {
@@ -127,5 +97,43 @@ namespace Business
                 throw new Utilities.Exceptions.ValidationException("Name", "El Name del proceso es obligatorio");
             }
         }
+
+        // Método para mapear de Process a ProcessDto
+        private ProcessDto MapToDTO(Process process)
+        {
+            return new ProcessDto
+            {
+                Id = process.Id,
+                TypeProcess = process.TypeProcess,
+                Observation = process.Observation,
+                Active = process.Active // si existe la entidad
+            };
+        }
+
+        // Método para mapear de ProcessDto a Process
+        private Process MapToEntity(ProcessDto processDto)
+        {
+            return new Process
+            {
+                Id = processDto.Id,
+                TypeProcess = processDto.TypeProcess,
+                Observation = processDto.Observation,
+                Active = processDto.Active // si existe la entidad
+            };
+        }
+
+        // Método para mapear una lista de Process a una lista de ProcessDto
+        private IEnumerable<ProcessDto> MapToDTOList(IEnumerable<Process> processes)
+        {
+            var processesDTO = new List<ProcessDto>();
+            foreach (var process in processes)
+            {
+                processesDTO.Add(MapToDTO(process));
+            }
+            return processesDTO;
+        }
     }
 }
+
+
+
