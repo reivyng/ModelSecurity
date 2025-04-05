@@ -43,12 +43,100 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aprendiz.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AprendizProcessInstructor.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AprendizProgram.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Center.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="change_log.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Concept.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbAutogestion.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DbAutogestion.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DbAutogestion.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
     <Compile Include="DbAutogestion.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DbAutogestion.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Enterprise.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Form.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FormModule.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Instructor.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstructorProgram.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Module.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Person.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Process.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Regional.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterySofia.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Rol.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="RolForm.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Sede.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="State.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TypeModality.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="User.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRol.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSede.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Verification.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="DbAutogestion.edmx">
@@ -61,6 +149,21 @@
     <None Include="DbAutogestion.edmx.diagram">
       <DependentUpon>DbAutogestion.edmx</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DbAutogestion.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DbAutogestion.Context.cs</LastGenOutput>
+      <DependentUpon>DbAutogestion.edmx</DependentUpon>
+    </Content>
+    <Content Include="DbAutogestion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DbAutogestion.cs</LastGenOutput>
+      <DependentUpon>DbAutogestion.edmx</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

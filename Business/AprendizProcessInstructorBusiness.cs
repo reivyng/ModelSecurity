@@ -26,26 +26,7 @@ namespace Business
             try
             {
                 var relaciones = await _aprendizProcessInstructorData.GetAllAsync();
-                var relacionesDTO = new List<AprendizProcessInstructorDto>();
-
-                foreach (var relacion in relaciones)
-                {
-                    relacionesDTO.Add(new AprendizProcessInstructorDto
-                    {
-                        Id = relacion.Id,
-                        AprendizId = relacion.AprendizId,
-                        InstructorId = relacion.InstructorId,
-                        RegisterySofiaId = relacion.RegisterySofiaId,
-                        ConceptId = relacion.ConceptId,
-                        EnterpriseId = relacion.EnterpriseId,
-                        ProcessId = relacion.ProcessId,
-                        TypeModalityId = relacion.TypeModalityId,
-                        StateId = relacion.StateId,
-                        VerificationId = relacion.VerificationId
-                    });
-                }
-
-                return relacionesDTO;
+                return MapToDTOList(relaciones);
             }
             catch (Exception ex)
             {
@@ -71,20 +52,7 @@ namespace Business
                     _logger.LogInformation("No se encontró ninguna relación con ID: {Id}", id);
                     throw new EntityNotFoundException("AprendizProcessInstructor", id);
                 }
-
-                return new AprendizProcessInstructorDto
-                {
-                    Id = relacion.Id,
-                    AprendizId = relacion.AprendizId,
-                    InstructorId = relacion.InstructorId,
-                    RegisterySofiaId = relacion.RegisterySofiaId,
-                    ConceptId = relacion.ConceptId,
-                    EnterpriseId = relacion.EnterpriseId,
-                    ProcessId = relacion.ProcessId,
-                    TypeModalityId = relacion.TypeModalityId,
-                    StateId = relacion.StateId,
-                    VerificationId = relacion.VerificationId
-                };
+                return MapToDTO(relacion);
             }
             catch (Exception ex)
             {
@@ -100,35 +68,11 @@ namespace Business
             {
                 ValidateAprendizProcessInstructor(dto);
 
-                var relacion = new AprendizProcessInstructor
-                {
-                    Id = dto.Id,
-                    AprendizId = dto.AprendizId,
-                    InstructorId = dto.InstructorId,
-                    RegisterySofiaId = dto.RegisterySofiaId,
-                    ConceptId = dto.ConceptId,
-                    EnterpriseId = dto.EnterpriseId,
-                    ProcessId = dto.ProcessId,
-                    TypeModalityId = dto.TypeModalityId,
-                    StateId = dto.StateId,
-                    VerificationId = dto.VerificationId
-                };
+                var relacion = MapToEntity(dto);
 
                 var creada = await _aprendizProcessInstructorData.CreateAsync(relacion);
 
-                return new AprendizProcessInstructorDto
-                {
-                    Id = relacion.Id,
-                    AprendizId = relacion.AprendizId,
-                    InstructorId = relacion.InstructorId,
-                    RegisterySofiaId = relacion.RegisterySofiaId,
-                    ConceptId = relacion.ConceptId,
-                    EnterpriseId = relacion.EnterpriseId,
-                    ProcessId = relacion.ProcessId,
-                    TypeModalityId = relacion.TypeModalityId,
-                    StateId = relacion.StateId,
-                    VerificationId = relacion.VerificationId
-                };
+                return MapToDTO(creada);
             }
             catch (Exception ex)
             {
@@ -150,6 +94,53 @@ namespace Business
                 _logger.LogWarning("Se intentó crear una relación con IDs inválidos");
                 throw new Utilities.Exceptions.ValidationException("IDs", "Los IDs deben ser mayores que cero");
             }
+        }
+
+        // Método para mapear de AprendizProcessInstructor a AprendizProcessInstructorDto
+        private AprendizProcessInstructorDto MapToDTO(AprendizProcessInstructor relacion)
+        {
+            return new AprendizProcessInstructorDto
+            {
+                Id = relacion.Id,
+                AprendizId = relacion.AprendizId,
+                InstructorId = relacion.InstructorId,
+                RegisterySofiaId = relacion.RegisterySofiaId,
+                ConceptId = relacion.ConceptId,
+                EnterpriseId = relacion.EnterpriseId,
+                ProcessId = relacion.ProcessId,
+                TypeModalityId = relacion.TypeModalityId,
+                StateId = relacion.StateId,
+                VerificationId = relacion.VerificationId
+            };
+        }
+
+        // Método para mapear de AprendizProcessInstructorDto a AprendizProcessInstructor
+        private AprendizProcessInstructor MapToEntity(AprendizProcessInstructorDto dto)
+        {
+            return new AprendizProcessInstructor
+            {
+                Id = dto.Id,
+                AprendizId = dto.AprendizId,
+                InstructorId = dto.InstructorId,
+                RegisterySofiaId = dto.RegisterySofiaId,
+                ConceptId = dto.ConceptId,
+                EnterpriseId = dto.EnterpriseId,
+                ProcessId = dto.ProcessId,
+                TypeModalityId = dto.TypeModalityId,
+                StateId = dto.StateId,
+                VerificationId = dto.VerificationId
+            };
+        }
+
+        // Método para mapear una lista de AprendizProcessInstructor a una lista de AprendizProcessInstructorDto
+        private IEnumerable<AprendizProcessInstructorDto> MapToDTOList(IEnumerable<AprendizProcessInstructor> relaciones)
+        {
+            var relacionesDTO = new List<AprendizProcessInstructorDto>();
+            foreach (var relacion in relaciones)
+            {
+                relacionesDTO.Add(MapToDTO(relacion));
+            }
+            return relacionesDTO;
         }
     }
 }

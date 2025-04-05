@@ -1,5 +1,4 @@
-﻿
-using Data;
+﻿using Data;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
@@ -29,27 +28,15 @@ namespace Business
             try
             {
                 var roles = await _rolData.GetAllAsync();
-                var rolesDTO = new List<RolDto>();
-
-                foreach (var rol in roles)
-                {
-                    rolesDTO.Add(new RolDto
-                    {
-                        Id = rol.Id,
-                        TypeRol = rol.TypeRol,
-                        Description = rol.Description,
-                        Active = rol.Active //si existe la entidad
-                    });
-                }
-                return rolesDTO;
-
+                return MapToDTOList(roles);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error al obtener todos los rolez");
+                _logger.LogError(ex, "Error al obtener todos los roles");
                 throw new ExternalServiceException("Base de datos", "Error al recuperar la lista de roles", ex);
             }
         }
+
         // Método para obtener un rol por su ID como DTO
         public async Task<RolDto> GetRolByIdAsync(int id)
         {
@@ -66,13 +53,7 @@ namespace Business
                     _logger.LogInformation("No se encontró el rol con ID {RolId}", id);
                     throw new EntityNotFoundException("Rol", id);
                 }
-                return new RolDto
-                {
-                    Id = rol.Id,
-                    TypeRol = rol.TypeRol,
-                    Description = rol.Description,
-                    Active = rol.Active //si existe la entidad
-                };
+                return MapToDTO(rol);
             }
             catch (Exception ex)
             {
@@ -80,6 +61,7 @@ namespace Business
                 throw new ExternalServiceException("Base de datos", $"Error al recuperar el rol con ID {id}", ex);
             }
         }
+
         // Método para crear un rol desde un DTO
         public async Task<RolDto> CreateRolAsync(RolDto RolDto)
         {
@@ -87,25 +69,12 @@ namespace Business
             {
                 ValidateRol(RolDto);
 
-                var rol = new Rol
-                {
-                    Id = RolDto.Id,
-                    TypeRol = RolDto.TypeRol,
-                    Description = RolDto.Description,
-                    Active = RolDto.Active //si existe la entidad
-                };
+                var rol = MapToEntity(RolDto);
 
                 var rolCreado = await _rolData.CreateAsync(rol);
 
-                return new RolDto
-                {
-                    Id = rol.Id,
-                    TypeRol = rol.TypeRol,
-                    Description = rol.Description,
-                    Active = rol.Active //si existe la entidad
-
-                };
-              }
+                return MapToDTO(rolCreado);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error al crear un nuevo rol: {RolNombre}", RolDto?.TypeRol?? "null");
@@ -125,6 +94,41 @@ namespace Business
                 _logger.LogWarning("Se intentó crear/actualizar un rol con nombre vacio");
                 throw new Utilities.Exceptions.ValidationException("Name", "El nombre del rol nes obligatorio");
             }
+        }
+
+        // Método para mapear de Rol a RolDTO
+        private RolDto MapToDTO(Rol rol)
+        {
+            return new RolDto
+            {
+                Id = rol.Id,
+                Active = rol.Active,
+                TypeRol = rol.TypeRol, 
+                Description = rol.Description // Si existe en la entidad
+            };
+        }
+
+        // Método para mapear de RolDTO a Rol
+        private Rol MapToEntity(RolDto rolDTO)
+        {
+            return new Rol
+            {
+                Id = rolDTO.Id,
+                Active = rolDTO.Active,
+                TypeRol = rolDTO.TypeRol,
+                Description = rolDTO.Description // Si existe en la entidad
+            };
+        }
+
+        // Método para mapear una lista de Rol a una lista de RolDTO
+        private IEnumerable<RolDto> MapToDTOList(IEnumerable<Rol> roles)
+        {
+            var rolesDTO = new List<RolDto>();
+            foreach (var rol in roles)
+            {
+                rolesDTO.Add(MapToDTO(rol));
+            }
+            return rolesDTO;
         }
     }
 }
