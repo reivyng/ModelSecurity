@@ -106,7 +106,8 @@ namespace Business
                 Id = verification.Id,
                 Name = verification.Name,
                 Observation = verification.Observation,
-                Active = verification.Active
+                Active = verification.Active,
+                AprendizProcessInstructorId = verification.AprendizProcessInstructorId
             };
         }
 
@@ -118,7 +119,8 @@ namespace Business
                 Id = verificationDto.Id,
                 Name = verificationDto.Name,
                 Observation = verificationDto.Observation,
-                Active = verificationDto.Active
+                Active = verificationDto.Active,
+                AprendizProcessInstructorId = verificationDto.AprendizProcessInstructorId,
             };
         }
 

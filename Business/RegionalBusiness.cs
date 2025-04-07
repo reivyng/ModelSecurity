@@ -108,7 +108,8 @@ namespace Business
                 Description = regional.Description,
                 CodeRegional = regional.CodeRegional,
                 Address = regional.Address,
-                Active = regional.Active // si existe la entidad
+                Active = regional.Active,
+                CenterId = regional.CenterId // si existe la entidad
             };
         }
 
@@ -122,7 +123,8 @@ namespace Business
                 Description = regionalDto.Description,
                 CodeRegional = regionalDto.CodeRegional,
                 Address = regionalDto.Address,
-                Active = regionalDto.Active // si existe la entidad
+                Active = regionalDto.Active,
+                CenterId = regionalDto.CenterId // si existe la entidad
             };
         }
 

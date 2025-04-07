@@ -106,7 +106,8 @@ namespace Business
                 Id = process.Id,
                 TypeProcess = process.TypeProcess,
                 Observation = process.Observation,
-                Active = process.Active // si existe la entidad
+                Active = process.Active,
+                AprendizProcessInstructorId = process.AprendizProcessInstructorId
             };
         }
 
@@ -118,7 +119,8 @@ namespace Business
                 Id = processDto.Id,
                 TypeProcess = processDto.TypeProcess,
                 Observation = processDto.Observation,
-                Active = processDto.Active // si existe la entidad
+                Active = processDto.Active,
+                AprendizProcessInstructorId = processDto.AprendizProcessInstructorId,
             };
         }
 

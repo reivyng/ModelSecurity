@@ -110,6 +110,8 @@ namespace Business
                 TypeCuestion = form.TypeCuestion,
                 Answer = form.Answer,
                 Active = form.Active,
+                FormModuleId = form.FormModuleId,
+                RolFormId = form.RolFormId,
             };
         }
 
@@ -125,6 +127,8 @@ namespace Business
                 TypeCuestion = formDto.TypeCuestion,
                 Answer = formDto.Answer,
                 Active = formDto.Active,
+                FormModuleId = formDto.FormModuleId,
+                RolFormId = formDto.RolFormId,
             };
         }
 

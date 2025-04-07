@@ -105,7 +105,8 @@ namespace Business
                 Id = concept.Id,
                 Name = concept.Name,
                 Observation = concept.Observation,
-                Active = concept.Active
+                Active = concept.Active,
+                AprendizProcessInstructorId = concept.AprendizProcessInstructorId
             };
         }
 
@@ -117,7 +118,8 @@ namespace Business
                 Id = conceptDto.Id,
                 Name = conceptDto.Name,
                 Observation = conceptDto.Observation,
-                Active = conceptDto.Active
+                Active = conceptDto.Active,
+                AprendizProcessInstructorId = conceptDto.AprendizProcessInstructorId,
             };
         }
 

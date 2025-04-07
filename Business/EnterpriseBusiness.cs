@@ -110,6 +110,7 @@ namespace Business
                 PhoneEnterprise = enterprise.PhoneEnterprise,
                 EmailEnterprise = enterprise.EmailEnterprise,
                 Active = enterprise.Active,
+                AprendizProcessInstructorId = enterprise.AprendizProcessInstructorId
             };
         }
 
@@ -125,7 +126,8 @@ namespace Business
                 Observation = enterpriseDto.Observation,
                 PhoneEnterprise = enterpriseDto.PhoneEnterprise,
                 EmailEnterprise = enterpriseDto.EmailEnterprise,
-                Active = enterpriseDto.Active
+                Active = enterpriseDto.Active,
+                AprendizProcessInstructorId = enterpriseDto.AprendizProcessInstructorId,
             };
         }
 

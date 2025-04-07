@@ -106,7 +106,8 @@ namespace Business
                 Id = state.Id,
                 TypeState = state.TypeState,
                 Description = state.Description,
-                Active = state.Active // si existe la entidad
+                Active = state.Active,
+                AprendizProcessInstructorId = state.AprendizProcessInstructorId
             };
         }
 
@@ -118,7 +119,8 @@ namespace Business
                 Id = stateDto.Id,
                 TypeState = stateDto.TypeState,
                 Description = stateDto.Description,
-                Active = stateDto.Active // si existe la entidad
+                Active = stateDto.Active,
+                AprendizProcessInstructorId = stateDto.AprendizProcessInstructorId,
             };
         }
 

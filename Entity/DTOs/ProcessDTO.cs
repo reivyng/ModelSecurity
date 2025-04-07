@@ -10,8 +10,9 @@ namespace Entity.DTOautogestion
     {
         public int Id { get; set; }
         public string StartAprendiz { get; set; }
-        public string TypeProcess { get; set; }
         public string Observation { get; set; }
+        public string TypeProcess { get; set; }
         public bool Active { get; set; }
+        public int AprendizProcessInstructorId { get; set; }
     }
 }

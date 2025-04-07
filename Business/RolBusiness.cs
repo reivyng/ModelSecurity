@@ -104,7 +104,9 @@ namespace Business
                 Id = rol.Id,
                 Active = rol.Active,
                 TypeRol = rol.TypeRol, 
-                Description = rol.Description // Si existe en la entidad
+                Description = rol.Description,
+                RolFormId = rol.RolFormId,
+                UserRolId = rol.UserRolId
             };
         }
 
@@ -116,7 +118,9 @@ namespace Business
                 Id = rolDTO.Id,
                 Active = rolDTO.Active,
                 TypeRol = rolDTO.TypeRol,
-                Description = rolDTO.Description // Si existe en la entidad
+                Description = rolDTO.Description,
+                RolFormId = rolDTO.RolFormId,
+                UserRolId = rolDTO.UserRolId
             };
         }
 

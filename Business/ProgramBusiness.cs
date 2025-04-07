@@ -108,7 +108,9 @@ namespace Business
                 Description = program.Description,
                 CodeProgram = program.CodeProgram,
                 TypeProgram = program.TypeProgram,
-                Active = program.Active // si existe la entidad
+                Active = program.Active,
+                AprendizProgramId = program.AprendizProgramId,
+                InstructorProgramId = program.InstructorProgramId
             };
         }
 
@@ -122,7 +124,9 @@ namespace Business
                 Description = programDto.Description,
                 CodeProgram = programDto.CodeProgram,
                 TypeProgram = programDto.TypeProgram,
-                Active = programDto.Active // si existe la entidad
+                Active = programDto.Active,
+                AprendizProgramId = programDto.AprendizProgramId,
+                InstructorProgramId = programDto.InstructorProgramId,
             };
         }
 

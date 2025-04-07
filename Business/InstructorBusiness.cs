@@ -104,7 +104,9 @@ namespace Business
             {
                 Id = instructor.Id,
                 Active = instructor.Active,
-                UserId = instructor.UserId // Relación con la entidad User
+                UserId = instructor.UserId,
+                AprendizProcessInstructorId = instructor.AprendizProcessInstructorId,
+                InstructorProgramId = instructor.InstructorProgramId // Relación con la entidad User
             };
         }
 
@@ -115,7 +117,9 @@ namespace Business
             {
                 Id = instructorDto.Id,
                 Active = instructorDto.Active,
-                UserId = instructorDto.UserId // Relación con la entidad User
+                UserId = instructorDto.UserId,
+                AprendizProcessInstructorId = instructorDto.AprendizProcessInstructorId,
+                InstructorProgramId = instructorDto.InstructorProgramId // Relación con la entidad User
             };
         }
 

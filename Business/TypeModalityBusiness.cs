@@ -106,7 +106,8 @@ namespace Business
                 Id = typeModality.Id,
                 Name = typeModality.Name,
                 Description = typeModality.Description,
-                Active = typeModality.Active
+                Active = typeModality.Active,
+                AprendizProcessInstructorId = typeModality.AprendizProcessInstructorId
             };
         }
 
@@ -118,7 +119,8 @@ namespace Business
                 Id = typeModalityDto.Id,
                 Name = typeModalityDto.Name,
                 Description = typeModalityDto.Description,
-                Active = typeModalityDto.Active
+                Active = typeModalityDto.Active,
+                AprendizProcessInstructorId = typeModalityDto.AprendizProcessInstructorId
             };
         }
 

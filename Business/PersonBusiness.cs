@@ -104,6 +104,7 @@ namespace Business
             return new PersonDto
             {
                 Id = person.Id,
+                Active = person.Active,
                 Name = person.Name,
                 FirstName = person.FirstName,
                 SecondName = person.SecondName,
@@ -114,7 +115,7 @@ namespace Business
                 TypeIdentification = person.TypeIdentification,
                 NumberIdentification = person.NumberIdentification,
                 Signig = person.Signig,
-                Active = person.Active
+                UserId = person.UserId
             };
         }
 
@@ -134,7 +135,8 @@ namespace Business
                 TypeIdentification = personDto.TypeIdentification,
                 NumberIdentification = personDto.NumberIdentification,
                 Signig = personDto.Signig,
-                Active = personDto.Active
+                Active = personDto.Active,
+                UserId = personDto.UserId,
             };
         }
 

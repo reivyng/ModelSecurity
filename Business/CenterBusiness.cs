@@ -107,7 +107,8 @@ namespace Business
                 CodeCenter = center.CodeCenter,
                 Active = center.Active,
                 RegionalId = center.RegionalId,
-                Address = center.Address
+                Address = center.Address,
+                SedeId = center.SedeId // Descomentar si es necesario
             };
         }
 
@@ -121,7 +122,8 @@ namespace Business
                 CodeCenter = centerDto.CodeCenter,
                 Active = centerDto.Active,
                 RegionalId = centerDto.RegionalId,
-                Address = centerDto.Address
+                Address = centerDto.Address,
+                SedeId = centerDto.SedeId, // Descomentar si es necesario
             };
         }
 

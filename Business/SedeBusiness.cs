@@ -110,7 +110,8 @@ namespace Business
                 PhoneSede = sede.PhoneSede,
                 EmailContact = sede.EmailContact,
                 CenterId = sede.CenterId,
-                Active = sede.Active // si existe la entidad
+                Active = sede.Active,
+                UserSedeId = sede.UserSedeId // si existe la entidad
             };
         }
 
@@ -126,7 +127,8 @@ namespace Business
                 PhoneSede = sedeDto.PhoneSede,
                 EmailContact = sedeDto.EmailContact,
                 CenterId = sedeDto.CenterId,
-                Active = sedeDto.Active // si existe la entidad
+                Active = sedeDto.Active,
+                UserSedeId = sedeDto.UserSedeId, // si existe la entidad
             };
         }
 
