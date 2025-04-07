@@ -18,5 +18,9 @@ namespace Entity.Model
         public DateTime CreateDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public int FormModuleId { get; set; }
+        public FormModule FormModule { get; set; }
+        public int RolFormId { get; set; }
+        public RolForm RolForm { get; set; }
     }
 }

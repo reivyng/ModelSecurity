@@ -13,5 +13,6 @@ namespace Entity.DTOautogestion
         public string Username { get; set; }
         public string Email { get; set; }
         public int PersonId { get; set; }
+        public int AprendizId { get; set; }
     }
 }

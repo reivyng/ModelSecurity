@@ -18,5 +18,7 @@ namespace Entity.Model
         public DateTime UpdateDate { get; set; }
         public int RegionalId { get; set; }
         public Regional Regional { get; set; }
+        public int SedeId { get; set; }
+        public Sede Sede { get; set; }
     }
 }

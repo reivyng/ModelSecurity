@@ -24,5 +24,7 @@ namespace Entity.Model
         public DateTime CreateDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

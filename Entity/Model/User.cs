@@ -15,6 +15,13 @@ namespace Entity.Model
         public bool Active { get; set; }
         public int PersonId { get; set; }
         public Person Person { get; set; }
-
+        public int AprendizId { get; set; }
+        public Aprendiz Aprendiz { get; set; }
+        public int InstructorId { get; set; }
+        public Instructor Instructor { get; set; }
+        public int UserRolId { get; set; }
+        public UserRol UserRol { get; set; }
+        public int UserSedeId { get; set; }
+        public UserSede UserSede { get; set; }
     }
 }
