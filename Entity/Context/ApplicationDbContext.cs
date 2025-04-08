@@ -6,8 +6,9 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
-//preguntar el xq para este debo hacer un llamado a la clase
 using Module = Entity.Model.Module;
+using Process = Entity.Model.Process;
+
 
 namespace Entity.Contexts
 {
@@ -33,34 +34,35 @@ namespace Entity.Contexts
             _configuration = configuration;
         }
 
-        ///
-        /// DB SETS
-        ///
-        public DbSet<Aprendiz> AprendizSet { get; set; }
-        public DbSet<AprendizProcessInstructor> AprendizProcessInstructorSet { get; set; }
-        public DbSet<AprendizProgram> AprendizProgramSet { get; set; }
-        public DbSet<Center> CenterSet { get; set; }
-        public DbSet<ChangeLog> ChangeLogSet { get; set; }
-        public DbSet<Concept> ConceptSet { get; set; }
-        public DbSet<Enterprise> EnterpriseSet { get; set; }
-        public DbSet<Form> FormSet { get; set; }
-        public DbSet<FormModule> FormModuleSet { get; set; }
-        public DbSet<Instructor> InstructorSet { get; set; }
-        public DbSet<InstructorProgram> InstructorProgramSet { get; set; }
-        public DbSet<Module> ModuleSet { get; set; } //para investigar|
-        public DbSet<Person> PersonSet { get; set; }
-        public DbSet<Process> ProcessSet { get; set; }
-        public DbSet<Program> ProgramSet { get; set; }
-        public DbSet<Regional> RegionalSet { get; set; }
-        public DbSet<RegisterySofia> RegisterySofiaSet { get; set; }
+        ///DB SETS
         public DbSet<Rol> Rol { get; set; }
-        public DbSet<Sede> SedeSet { get; set; }
-        public DbSet<State> StateSet { get; set; }
-        public DbSet<TypeModality> TypeModalitySet { get; set; }
+        public DbSet<Verification> Verification { get; set; }
         public DbSet<User> User { get; set; }
-        public DbSet<UserRol> UserRolSet { get; set; }
+        public DbSet<Person> Person { get; set; }
+        public DbSet<UserRol> UserRol { get; set; }
+        public DbSet<Sede> Sede { get; set; }
         public DbSet<UserSede> UserSede { get; set; }
-        public DbSet<Verification> VerificationSet { get; set; }
+        public DbSet<Aprendiz> Aprendiz { get; set; }
+        public DbSet<Instructor> Instructor { get; set; }
+        public DbSet<Process> Process { get; set; }
+        public DbSet<Program> Program { get; set; }
+        public DbSet<InstructorProgram> InstructorProgram { get; set; }
+        public DbSet<AprendizProgram> AprendizProgram { get; set; }
+        public DbSet<AprendizProcessInstructor> AprendizProcessInstructor { get; set; }
+        public DbSet<Form> Form { get; set; }
+        public DbSet<Module> Module { get; set; }
+        public DbSet<FormModule> FormModule { get; set; }
+        public DbSet<RolForm> RolForm { get; set; }
+        public DbSet<TypeModality> TypeModality { get; set; }
+        public DbSet<State> State { get; set; }
+        public DbSet<RegisterySofia> RegisterySofia { get; set; }
+        public DbSet<Regional> Regional { get; set; }
+        public DbSet<Center> Center { get; set; }
+        public DbSet<Enterprise> Enterprise { get; set; }
+        public DbSet<ChangeLog> ChangeLog { get; set; }
+        public DbSet<Concept> Concept { get; set; }
+
+
 
         /// <summary>
         /// Configura los modelos de la base de datos aplicando configuraciones desde ensamblados.
@@ -68,10 +70,16 @@ namespace Entity.Contexts
         /// <param name="modelBuilder">Constructor del modelo de base de datos.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //relaciones de las entidades, se colocan las que tienen llaves foraneas 
+
+            modelBuilder.Entity<Person>()
+                .HasOne(p => p.User)
+                .WithOne(u => u.Person)
+                .HasForeignKey<User>(u => u.PersonId);
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            base.OnModelCreating(modelBuilder);
         }
 
         /// <summary>
