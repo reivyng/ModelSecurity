@@ -13,5 +13,6 @@ namespace Entity.DTOautogestion
         public string Description { get; set; }
         public bool Active { get; set; }
         public int AprendizProcessInstructorId { get; set; }
+
     }
 }

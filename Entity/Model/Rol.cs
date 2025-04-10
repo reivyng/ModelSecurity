@@ -13,8 +13,11 @@ namespace Entity.Model
         public string Description { get; set; }
         public bool Active { get; set; }
         public int RolFormId { get; set; }
-        public RolForm RolForm { get; set; }
+
+        public ICollection<RolForm> RolForm { get; set; }
+
         public int UserRolId { get; set; }
-        public UserRol UserRol { get; set; }
+        public ICollection<UserRol> UserRol  { get; set; }
+
     }
 }

@@ -14,5 +14,6 @@ namespace Entity.DTOautogestion
         public string Document { get; set; }
         public bool Active { get; set; }
         public int AprendizProcessInstructorId { get; set; }
+
     }
 }

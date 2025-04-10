@@ -11,7 +11,7 @@ namespace Entity.DTOautogestion
         public int Id { get; set; }
         public bool Active { get; set; }
         public int UserId { get; set; }
-        public int AprendizProcessInstructorId { get; set; }
         public int InstructorProgramId { get; set; }
+        public int AprendizProcessInstructorId { get; set; }
     }
 }

@@ -21,5 +21,6 @@ namespace Entity.DTOautogestion
         public int NumberIdentification { get; set; }
         public bool Signig { get; set; }
         public int UserId { get; set; }
+
     }
 }
