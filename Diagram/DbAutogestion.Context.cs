@@ -51,5 +51,6 @@ namespace Diagram2
         public virtual DbSet<InstructorProgram> instructors_programs { get; set; }
         public virtual DbSet<change_log> change_logs { get; set; }
         public virtual DbSet<Center> CenterSet { get; set; }
+        public virtual DbSet<Boss> BossSet { get; set; }
     }
 }

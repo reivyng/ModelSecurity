@@ -109,8 +109,6 @@ namespace Business
                 CodeProgram = program.CodeProgram,
                 TypeProgram = program.TypeProgram,
                 Active = program.Active,
-                AprendizProgramId = program.AprendizProgramId,
-                InstructorProgramId = program.InstructorProgramId
             };
         }
 
@@ -125,8 +123,6 @@ namespace Business
                 CodeProgram = programDto.CodeProgram,
                 TypeProgram = programDto.TypeProgram,
                 Active = programDto.Active,
-                AprendizProgramId = programDto.AprendizProgramId,
-                InstructorProgramId = programDto.InstructorProgramId,
             };
         }
 

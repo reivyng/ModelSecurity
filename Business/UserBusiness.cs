@@ -114,10 +114,6 @@ namespace Business
                 Email = user.Email,
                 Active = user.Active,
                 PersonId = user.PersonId,
-                AprendizId = user.AprendizId,
-                InstructorId = user.InstructorId,
-                UserRolId = user.UserRolId,
-                UserSedeId = user.UserSedeId
             };
         }
 
@@ -131,10 +127,6 @@ namespace Business
                 Email = userDto.Email,
                 Active = userDto.Active,
                 PersonId = userDto.PersonId,
-                AprendizId = userDto.AprendizId,
-                InstructorId = userDto.InstructorId,
-                UserRolId = userDto.UserRolId,
-                UserSedeId = userDto.UserSedeId
             };
         }
 

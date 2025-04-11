@@ -1,5 +1,6 @@
 ﻿using Data;
 using Entity.DTOautogestion;
+using Entity.DTOs;
 using Entity.Model;
 using Microsoft.Extensions.Logging;
 using Utilities.Exceptions;
@@ -110,7 +111,6 @@ namespace Business
                 PhoneEnterprise = enterprise.PhoneEnterprise,
                 EmailEnterprise = enterprise.EmailEnterprise,
                 Active = enterprise.Active,
-                AprendizProcessInstructorId = enterprise.AprendizProcessInstructorId
             };
         }
 
@@ -127,7 +127,6 @@ namespace Business
                 PhoneEnterprise = enterpriseDto.PhoneEnterprise,
                 EmailEnterprise = enterpriseDto.EmailEnterprise,
                 Active = enterpriseDto.Active,
-                AprendizProcessInstructorId = enterpriseDto.AprendizProcessInstructorId,
             };
         }
 

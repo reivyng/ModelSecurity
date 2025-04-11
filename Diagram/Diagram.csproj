@@ -52,6 +52,9 @@
     <Compile Include="AprendizProgram.cs">
       <DependentUpon>DbAutogestion.tt</DependentUpon>
     </Compile>
+    <Compile Include="Boss.cs">
+      <DependentUpon>DbAutogestion.tt</DependentUpon>
+    </Compile>
     <Compile Include="Center.cs">
       <DependentUpon>DbAutogestion.tt</DependentUpon>
     </Compile>

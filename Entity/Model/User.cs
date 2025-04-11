@@ -13,9 +13,10 @@ namespace Entity.Model
         public string Email { get; set; }
         public string Password { get; set; }
         public bool Active { get; set; }
-        public Person Person { get; set; }
         public ICollection<UserRol> UserRol { get; set; }
         public ICollection<UserSede> UserSede { get; set; }
+        public int PersonId { get; set; }
+        public Person Person { get; set; }
         public Instructor Instructor { get; set; }
         public Aprendiz Aprendiz { get; set; }
 

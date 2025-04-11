@@ -16,6 +16,7 @@ namespace Entity.Model
         public DateTime CreateDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public int RegionalId { get; set; }
         public Regional Regional { get; set; }
         public ICollection<Sede> Sede { get; set; }
 

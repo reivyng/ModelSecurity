@@ -107,7 +107,6 @@ namespace Business
                 Name = verification.Name,
                 Observation = verification.Observation,
                 Active = verification.Active,
-                AprendizProcessInstructorId = verification.AprendizProcessInstructorId
             };
         }
 
@@ -120,7 +119,6 @@ namespace Business
                 Name = verificationDto.Name,
                 Observation = verificationDto.Observation,
                 Active = verificationDto.Active,
-                AprendizProcessInstructorId = verificationDto.AprendizProcessInstructorId,
             };
         }
 

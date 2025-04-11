@@ -34,5 +34,6 @@ namespace Diagram2
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AprendizProcessInstructor> AprendizProcessInstructor { get; set; }
+        public virtual Boss BossId { get; set; }
     }
 }

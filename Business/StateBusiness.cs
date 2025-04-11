@@ -107,7 +107,6 @@ namespace Business
                 TypeState = state.TypeState,
                 Description = state.Description,
                 Active = state.Active,
-                AprendizProcessInstructorId = state.AprendizProcessInstructorId
             };
         }
 
@@ -120,7 +119,6 @@ namespace Business
                 TypeState = stateDto.TypeState,
                 Description = stateDto.Description,
                 Active = stateDto.Active,
-                AprendizProcessInstructorId = stateDto.AprendizProcessInstructorId,
             };
         }
 

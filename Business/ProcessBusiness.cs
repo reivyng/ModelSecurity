@@ -107,7 +107,6 @@ namespace Business
                 TypeProcess = process.TypeProcess,
                 Observation = process.Observation,
                 Active = process.Active,
-                AprendizProcessInstructorId = process.AprendizProcessInstructorId
             };
         }
 
@@ -120,7 +119,6 @@ namespace Business
                 TypeProcess = processDto.TypeProcess,
                 Observation = processDto.Observation,
                 Active = processDto.Active,
-                AprendizProcessInstructorId = processDto.AprendizProcessInstructorId,
             };
         }
 

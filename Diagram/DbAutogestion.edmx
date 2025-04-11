@@ -141,6 +141,11 @@
             <End Role="AprendizProcessInstructor" EntitySet="AprendizProcessInstructorSet" />
             <End Role="Process" EntitySet="ProcessSet" />
           </AssociationSet>
+          <EntitySet Name="BossSet" EntityType="DbAutogestion.Boss" />
+          <AssociationSet Name="EnterpriseBoss" Association="DbAutogestion.EnterpriseBoss">
+            <End Role="Enterprise" EntitySet="EnterpriseSet" />
+            <End Role="Boss" EntitySet="BossSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Form">
           <Key>
@@ -423,6 +428,7 @@
           <Property Name="Active" Type="Boolean" Nullable="false" />
           <Property Name="EmailEnterprise" Type="String" Nullable="false" />
           <NavigationProperty Name="AprendizProcessInstructor" Relationship="DbAutogestion.AprendizProceesIntructorEnterprise" FromRole="Enterprise" ToRole="AprendizProceesIntructor" />
+          <NavigationProperty Name="BossId" Relationship="DbAutogestion.EnterpriseBoss" FromRole="Enterprise" ToRole="Boss" />
         </EntityType>
         <EntityType Name="Process">
           <Key>
@@ -596,6 +602,20 @@
         <Association Name="ProcessAprendizProcessInstructor">
           <End Type="DbAutogestion.AprendizProcessInstructor" Role="AprendizProcessInstructor" Multiplicity="*" />
           <End Type="DbAutogestion.Process" Role="Process" Multiplicity="1" />
+        </Association>
+        <EntityType Name="Boss">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Enterprise" Relationship="DbAutogestion.EnterpriseBoss" FromRole="Boss" ToRole="Enterprise" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="EmailBoss" Type="String" Nullable="false" />
+          <Property Name="PhoneNumberBoss" Type="Int16" Nullable="false" />
+        </EntityType>
+        <Association Name="EnterpriseBoss">
+          <End Type="DbAutogestion.Enterprise" Role="Enterprise" Multiplicity="1" />
+          <End Type="DbAutogestion.Boss" Role="Boss" Multiplicity="1" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>

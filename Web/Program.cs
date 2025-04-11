@@ -15,6 +15,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<RolData>();
 builder.Services.AddScoped<RolBusiness>();
 
+// Registrar clases de Form
+builder.Services.AddScoped<FormData>();
+builder.Services.AddScoped<FormBusiness>();
+
 // Agregar CORS 
 //mecanismo de seguridad que permite o restringe las solicitudes de recursos que se originan desde un dominio diferente al del servidor.
 var OrigenesPermitidos = builder.Configuration.GetValue<string>("OrigenesPermitidos")!.Split(",");

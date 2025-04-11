@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entity.DTOautogestion
+namespace Entity.DTOs
 {
-    public class ConceptDto
+    public class BossDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Observation { get; set; }
-        public bool Active { get; set; }
-
+        public string EmailBoss { get; set; }
+        public string PhoneNumberBoss { get; set; }
     }
 }

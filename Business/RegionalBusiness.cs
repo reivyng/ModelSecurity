@@ -109,7 +109,6 @@ namespace Business
                 CodeRegional = regional.CodeRegional,
                 Address = regional.Address,
                 Active = regional.Active,
-                CenterId = regional.CenterId // si existe la entidad
             };
         }
 
@@ -124,7 +123,6 @@ namespace Business
                 CodeRegional = regionalDto.CodeRegional,
                 Address = regionalDto.Address,
                 Active = regionalDto.Active,
-                CenterId = regionalDto.CenterId // si existe la entidad
             };
         }
 

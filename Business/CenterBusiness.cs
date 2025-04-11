@@ -108,7 +108,6 @@ namespace Business
                 Active = center.Active,
                 RegionalId = center.RegionalId,
                 Address = center.Address,
-                SedeId = center.SedeId // Descomentar si es necesario
             };
         }
 
@@ -123,7 +122,6 @@ namespace Business
                 Active = centerDto.Active,
                 RegionalId = centerDto.RegionalId,
                 Address = centerDto.Address,
-                SedeId = centerDto.SedeId, // Descomentar si es necesario
             };
         }
 

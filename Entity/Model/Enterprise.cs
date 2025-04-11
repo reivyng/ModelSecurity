@@ -19,6 +19,8 @@ namespace Entity.Model
         public DateTime CreateDate { get; set; }
         public DateTime DeleteDate { get; set; }
         public DateTime UpdateDate { get; set; }
+        public int BossId { get; set; }
+        public  ICollection<Boss> Boss { get; set; }    
         public  ICollection<AprendizProcessInstructor> AprendizProcessInstructor { get; set; }
     }
 }

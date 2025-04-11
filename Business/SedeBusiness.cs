@@ -111,7 +111,6 @@ namespace Business
                 EmailContact = sede.EmailContact,
                 CenterId = sede.CenterId,
                 Active = sede.Active,
-                UserSedeId = sede.UserSedeId // si existe la entidad
             };
         }
 
@@ -128,7 +127,6 @@ namespace Business
                 EmailContact = sedeDto.EmailContact,
                 CenterId = sedeDto.CenterId,
                 Active = sedeDto.Active,
-                UserSedeId = sedeDto.UserSedeId, // si existe la entidad
             };
         }
 

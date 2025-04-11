@@ -108,7 +108,6 @@ namespace Business
                 Description = registerySofia.Description,
                 Document = registerySofia.Document,
                 Active = registerySofia.Active,
-                AprendizProcessInstructorId = registerySofia.AprendizProcessInstructorId // si existe la entidad
             };
         }
 
@@ -122,7 +121,6 @@ namespace Business
                 Description = registerySofiaDto.Description,
                 Document = registerySofiaDto.Document,
                 Active = registerySofiaDto.Active,
-                AprendizProcessInstructorId = registerySofiaDto.AprendizProcessInstructorId, // si existe la entidad
             };
         }
 

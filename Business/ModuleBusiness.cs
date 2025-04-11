@@ -107,7 +107,6 @@ namespace Business
                 Name = module.Name,
                 Description = module.Description,
                 Active = module.Active,
-                FormModuleId = module.FormModuleId,
             };
         }
 
@@ -120,7 +119,6 @@ namespace Business
                 Name = moduleDto.Name,
                 Description = moduleDto.Description,
                 Active = moduleDto.Active,
-                FormModuleId = moduleDto.FormModuleId,
             };
         }
 
