@@ -14,12 +14,12 @@ namespace Data
     public class RolData
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<RolData> _logger;
         /// <summary>
         /// Constructor que recibe el contexto de la base de datos 
         /// </summary>
         /// <param name="context"> instancia de <see cref="ApplicationDbContext"/>para la conexion con la base de datos</param>
-        public RolData(ApplicationDbContext context, ILogger logger)
+        public RolData(ApplicationDbContext context, ILogger<RolData> logger)
         {
             _context = context;
             _logger = logger;
@@ -30,7 +30,8 @@ namespace Data
         /// <returns> Lista de roles </returns>
         public async Task<IEnumerable<Rol>> GetAllAsync()
         {
-            return await _context.Set<Rol>().ToListAsync();
+            IEnumerable<Rol> lstRoles = await _context.Set<Rol>().ToListAsync();
+            return lstRoles;
         }
 
         public async Task<Rol?> GetByidAsync(int id)
@@ -41,7 +42,7 @@ namespace Data
             }
             catch (Exception ex)
             {
-                _logger.LogError( $"Error al obtener rol con ID{id}");
+                _logger.LogError($"Error al obtener rol con ID{id}");
                 throw;// Re-lanza la excepcion para que sea manejada en capas superiores
             }
 
@@ -72,7 +73,7 @@ namespace Data
         /// </summary>
         /// <param name="rol">Objeto con la infromacion actualizada</param>
         /// <returns>True si la operacion fue exitosa, False en caso contrario.</returns>
-            public async Task<bool> UpdateAsync(Rol rol)
+        public async Task<bool> UpdateAsync(Rol rol)
         {
             try
             {
@@ -92,7 +93,7 @@ namespace Data
         /// </summary>
         /// <param name="id">Identificador unico del rol a eliminar</param>
         /// <returns>True si la eliminacion fue exitosa, False en caso contrario.</returns>
-            public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -110,5 +111,5 @@ namespace Data
                 return false;
             }
         }
-    } 
+    }
 }

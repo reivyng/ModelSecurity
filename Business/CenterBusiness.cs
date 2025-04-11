@@ -12,9 +12,9 @@ namespace Business
     public class CenterBusiness
     {
         private readonly CenterData _centerData;
-        private readonly ILogger _logger;
+        private readonly ILogger<CenterBusiness> _logger;
 
-        public CenterBusiness(CenterData centerData, ILogger logger)
+        public CenterBusiness(CenterData centerData, ILogger<CenterBusiness> logger)
         {
             _centerData = centerData;
             _logger = logger;

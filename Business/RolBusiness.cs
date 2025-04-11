@@ -15,9 +15,9 @@ namespace Business
     public class RolBusiness
     {
         private readonly RolData _rolData;
-        private readonly ILogger _logger;
+        private readonly ILogger<RolBusiness> _logger;
 
-        public RolBusiness(RolData rolData, ILogger logger)
+        public RolBusiness(RolData rolData, ILogger<RolBusiness> logger)
         {
             _rolData = rolData;
             _logger = logger;
@@ -104,9 +104,7 @@ namespace Business
                 Id = rol.Id,
                 Active = rol.Active,
                 TypeRol = rol.TypeRol, 
-                Description = rol.Description,
-                RolFormId = rol.RolFormId,
-                UserRolId = rol.UserRolId
+                Description = rol.Description
             };
         }
 
@@ -118,9 +116,7 @@ namespace Business
                 Id = rolDTO.Id,
                 Active = rolDTO.Active,
                 TypeRol = rolDTO.TypeRol,
-                Description = rolDTO.Description,
-                RolFormId = rolDTO.RolFormId,
-                UserRolId = rolDTO.UserRolId
+                Description = rolDTO.Description
             };
         }
 

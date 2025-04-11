@@ -13,9 +13,9 @@ namespace Business
     public class RegisterySofiaBusiness
     {
         private readonly RegisterySofiaData _registerySofiaData;
-        private readonly ILogger _logger;
+        private readonly ILogger<RegisterySofiaBusiness> _logger;
 
-        public RegisterySofiaBusiness(RegisterySofiaData registerySofiaData, ILogger logger)
+        public RegisterySofiaBusiness(RegisterySofiaData registerySofiaData, ILogger<RegisterySofiaBusiness> logger)
         {
             _registerySofiaData = registerySofiaData;
             _logger = logger;

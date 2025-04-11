@@ -27,7 +27,7 @@ builder.Services.AddCors(opciones =>
 });
 
 // Agregar DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
+builder.Services.AddDbContext<ApplicationDbContext>(opciones => opciones.UseSqlServer("name=localhost"));
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

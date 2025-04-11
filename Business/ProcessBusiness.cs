@@ -13,9 +13,9 @@ namespace Business
     public class ProcessBusiness
     {
         private readonly ProcessData _processData;
-        private readonly ILogger _logger;
+        private readonly ILogger<ProcessBusiness> _logger;
 
-        public ProcessBusiness(ProcessData processData, ILogger logger)
+        public ProcessBusiness(ProcessData processData, ILogger<ProcessBusiness> logger)
         {
             _processData = processData;
             _logger = logger;

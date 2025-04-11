@@ -12,9 +12,9 @@ namespace Business
     public class ConceptBusiness
     {
         private readonly ConceptData _conceptData;
-        private readonly ILogger _logger;
+        private readonly ILogger<ConceptBusiness> _logger;
 
-        public ConceptBusiness(ConceptData conceptData, ILogger logger)
+        public ConceptBusiness(ConceptData conceptData, ILogger<ConceptBusiness> logger)
         {
             _conceptData = conceptData;
             _logger = logger;

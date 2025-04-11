@@ -13,9 +13,9 @@ namespace Business
     public class RegionalBusiness
     {
         private readonly RegionalData _regionalData;
-        private readonly ILogger _logger;
+        private readonly ILogger<RegionalBusiness> _logger;
 
-        public RegionalBusiness(RegionalData regionalData, ILogger logger)
+        public RegionalBusiness(RegionalData regionalData, ILogger<RegionalBusiness> logger)
         {
             _regionalData = regionalData;
             _logger = logger;

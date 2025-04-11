@@ -13,9 +13,9 @@ namespace Business
     public class TypeModalityBusiness
     {
         private readonly TypeModalityData _typeModalityData;
-        private readonly ILogger _logger;
+        private readonly ILogger<TypeModalityBusiness> _logger;
 
-        public TypeModalityBusiness(TypeModalityData typeModalityData, ILogger logger)
+        public TypeModalityBusiness(TypeModalityData typeModalityData, ILogger<TypeModalityBusiness> logger)
         {
             _typeModalityData = typeModalityData;
             _logger = logger;

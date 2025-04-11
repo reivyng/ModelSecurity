@@ -13,9 +13,9 @@ namespace Business
     public class StateBusiness
     {
         private readonly StateData _stateData;
-        private readonly ILogger _logger;
+        private readonly ILogger<StateBusiness> _logger;
 
-        public StateBusiness(StateData stateData, ILogger logger)
+        public StateBusiness(StateData stateData, ILogger<StateBusiness> logger)
         {
             _stateData = stateData;
             _logger = logger;

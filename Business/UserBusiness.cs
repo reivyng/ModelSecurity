@@ -13,9 +13,9 @@ namespace Business
     public class UserBusiness
     {
         private readonly UserData _userData;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserBusiness> _logger;
 
-        public UserBusiness(UserData userData, ILogger logger)
+        public UserBusiness(UserData userData, ILogger<UserBusiness> logger)
         {
             _userData = userData;
             _logger = logger;

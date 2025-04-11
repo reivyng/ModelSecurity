@@ -13,9 +13,9 @@ namespace Business
     public class VerificationBusiness
     {
         private readonly VerificationData _verificationData;
-        private readonly ILogger _logger;
+        private readonly ILogger<VerificationBusiness> _logger;
 
-        public VerificationBusiness(VerificationData verificationData, ILogger logger)
+        public VerificationBusiness(VerificationData verificationData, ILogger<VerificationBusiness> logger)
         {
             _verificationData = verificationData;
             _logger = logger;

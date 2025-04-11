@@ -13,9 +13,9 @@ namespace Business
     public class ProgramBusiness
     {
         private readonly ProgramData _programData;
-        private readonly ILogger _logger;
+        private readonly ILogger<ProgramBusiness> _logger;
 
-        public ProgramBusiness(ProgramData programData, ILogger logger)
+        public ProgramBusiness(ProgramData programData, ILogger<ProgramBusiness> logger)
         {
             _programData = programData;
             _logger = logger;
