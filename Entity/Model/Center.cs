@@ -19,6 +19,5 @@ namespace Entity.Model
         public int RegionalId { get; set; }
         public Regional Regional { get; set; }
         public ICollection<Sede> Sede { get; set; }
-
     }
 }
