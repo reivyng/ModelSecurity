@@ -140,14 +140,34 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//    app.MapOpenApi();
+//}
+
+
+//app.UseHttpsRedirection();
+//app.UseAuthorization();
+//app.MapControllers();
+//app.Run();
+
+
+// Configurar PathBase
+app.UsePathBase("/api");
+
+// Configurar Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
-    app.MapOpenApi();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "API v1");
+        c.RoutePrefix = string.Empty;
+    });
 }
-
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
