@@ -70,7 +70,7 @@ namespace Business
                 ValidateConcept(conceptDto);
 
                 var concept = MapToEntity(conceptDto);
-
+                concept.CreateDate = DateTime.Now;
                 var conceptCreado = await _conceptData.CreateAsync(concept);
 
                 return MapToDTO(conceptCreado);

@@ -71,7 +71,7 @@ namespace Business
                 ValidateProcess(processDto);
 
                 var process = MapToEntity(processDto);
-
+                process.CreateDate = DateTime.Now;
                 var processCreado = await _processData.CreateAsync(process);
 
                 return MapToDTO(processCreado);

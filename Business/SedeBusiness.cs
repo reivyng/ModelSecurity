@@ -71,7 +71,7 @@ namespace Business
                 ValidateSede(sedeDto);
 
                 var sede = MapToEntity(sedeDto);
-
+                sede.CreateDate = DateTime.Now;
                 var sedeCreada = await _sedeData.CreateAsync(sede);
 
                 return MapToDTO(sedeCreada);

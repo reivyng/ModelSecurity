@@ -71,7 +71,7 @@ namespace Business
                 ValidateEnterprise(enterpriseDto);
 
                 var enterprise = MapToEntity(enterpriseDto);
-
+                enterprise.CreateDate = DateTime.Now;
                 var enterpriseCreado = await _enterpriseData.CreateAsync(enterprise);
 
                 return MapToDTO(enterpriseCreado);

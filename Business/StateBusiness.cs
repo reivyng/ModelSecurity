@@ -71,7 +71,7 @@ namespace Business
                 ValidateState(stateDto);
 
                 var state = MapToEntity(stateDto);
-
+                state.CreateDate = DateTime.Now;
                 var stateCreado = await _stateData.CreateAsync(state);
 
                 return MapToDTO(stateCreado);

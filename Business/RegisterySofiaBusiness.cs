@@ -71,7 +71,7 @@ namespace Business
                 ValidateRegisterySofia(registerySofiaDto);
 
                 var registerySofia = MapToEntity(registerySofiaDto);
-
+                registerySofia.CreateDate = DateTime.Now;
                 var registerySofiaCreado = await _registerySofiaData.CreateAsync(registerySofia);
 
                 return MapToDTO(registerySofiaCreado);

@@ -70,7 +70,7 @@ namespace Business
                 ValidateCenter(centerDto);
 
                 var center = MapToEntity(centerDto);
-
+                center.CreateDate = DateTime.Now;
                 var centerCreado = await _centerData.CreateAsync(center);
 
                 return MapToDTO(centerCreado);

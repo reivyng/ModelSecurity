@@ -71,7 +71,7 @@ namespace Business
                 ValidateProgram(programDto);
 
                 var program = MapToEntity(programDto);
-
+                program.CreateDate = DateTime.Now;
                 var programCreado = await _programData.CreateAsync(program);
 
                 return MapToDTO(programCreado);
