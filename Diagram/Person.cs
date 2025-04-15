@@ -15,9 +15,9 @@ namespace Diagram2
     public partial class Person
     {
         public int Id { get; set; }
-        public System.DateTime DeleteDate { get; set; }
-        public System.DateTime UpdateDate { get; set; }
-        public System.DateTime CreateDate { get; set; }
+        public DateTime? DeleteDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public bool Active { get; set; }
         public string Name { get; set; }
         public string FirstName { get; set; }
@@ -29,7 +29,6 @@ namespace Diagram2
         public string NumberIdentification { get; set; }
         public string Signing { get; set; }
         public string Email { get; set; }
-    
         public virtual User User { get; set; }
     }
 }

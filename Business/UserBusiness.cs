@@ -112,6 +112,7 @@ namespace Business
                 Id = user.Id,
                 Username = user.Username,
                 Email = user.Email,
+                Password = user.Password,
                 Active = user.Active,
                 PersonId = user.PersonId,
             };
@@ -125,6 +126,7 @@ namespace Business
                 Id = userDto.Id,
                 Username = userDto.Username,
                 Email = userDto.Email,
+                Password = userDto.Password,
                 Active = userDto.Active,
                 PersonId = userDto.PersonId,
             };

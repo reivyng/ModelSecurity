@@ -71,7 +71,7 @@ namespace Business
                 ValidatePerson(personDto);
 
                 var person = MapToEntity(personDto);
-
+                person.CreateDate = DateTime.UtcNow;
                 var personCreada = await _personData.CreateAsync(person);
 
                 return MapToDTO(personCreada);

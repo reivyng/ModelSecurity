@@ -107,6 +107,7 @@ namespace Business
                 TypeProcess = process.TypeProcess,
                 Observation = process.Observation,
                 Active = process.Active,
+                StartAprendiz = process.StartAprendiz
             };
         }
 
@@ -119,6 +120,7 @@ namespace Business
                 TypeProcess = processDto.TypeProcess,
                 Observation = processDto.Observation,
                 Active = processDto.Active,
+                StartAprendiz = processDto.StartAprendiz
             };
         }
 
