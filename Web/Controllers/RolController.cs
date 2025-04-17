@@ -123,5 +123,124 @@ namespace Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Actualiza un rol existente en el sistema
+        /// </summary>
+        /// <param name="id">ID del rol a actualizar</param>
+        /// <param name="rolDto">Datos actualizados del rol</param>
+        /// <returns>Resultado de la operación</returns>
+        /// <response code="200">Rol actualizado correctamente</response>
+        /// <response code="400">Datos del rol no válidos</response>
+        /// <response code="404">Rol no encontrado</response>
+        /// <response code="500">Error interno del servidor</response>
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateRol(int id, [FromBody] RolDto rolDto)
+        {
+            if (id != rolDto.Id)
+            {
+                return BadRequest(new { message = "El ID del rol no coincide con el ID proporcionado en el cuerpo de la solicitud." });
+            }
+
+            try
+            {
+                var result = await _RolBusiness.UpdateRolAsync(rolDto);
+                return Ok(new { message = "Rol actualizado correctamente", success = result });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar el rol con ID: {RolId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                _logger.LogInformation(ex, "Rol no encontrado con ID: {RolId}", id);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el rol con ID: {RolId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un rol (marca como inactivo)
+        /// </summary>
+        /// <param name="id">ID del rol a eliminar lógicamente</param>
+        /// <returns>Resultado de la operación</returns>
+        /// <response code="200">Rol marcado como inactivo correctamente</response>
+        /// <response code="400">ID proporcionado no válido</response>
+        /// <response code="404">Rol no encontrado</response>
+        /// <response code="500">Error interno del servidor</response>
+        [HttpPatch("soft-delete/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteRol(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "El ID del rol debe ser mayor a 0." });
+            }
+
+            try
+            {
+                var result = await _RolBusiness.SoftDeleteRolAsync(id);
+                return Ok(new { message = "Rol marcado como inactivo correctamente", success = result });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                _logger.LogInformation(ex, "Rol no encontrado con ID: {RolId}", id);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar la eliminación lógica del rol con ID: {RolId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un rol del sistema
+        /// </summary>
+        /// <param name="id">ID del rol a eliminar</param>
+        /// <returns>Resultado de la operación</returns>
+        /// <response code="200">Rol eliminado correctamente</response>
+        /// <response code="400">ID proporcionado no válido</response>
+        /// <response code="404">Rol no encontrado</response>
+        /// <response code="500">Error interno del servidor</response>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteRol(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new { message = "El ID del rol debe ser mayor a 0." });
+            }
+
+            try
+            {
+                var result = await _RolBusiness.DeleteRolAsync(id);
+                return Ok(new { message = "Rol eliminado correctamente", success = result });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                _logger.LogInformation(ex, "Rol no encontrado con ID: {RolId}", id);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar el rol con ID: {RolId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }
