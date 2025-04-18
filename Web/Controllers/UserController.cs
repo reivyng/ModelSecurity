@@ -108,5 +108,148 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un usuario existente
+        /// </summary>
+        /// <summary>
+        /// Actualiza un usuario existente
+        /// </summary>
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto userDto)
+        {
+            if (id != userDto.Id)
+            {
+                return BadRequest(new { message = "El ID del usuario no coincide con el ID proporcionado en el cuerpo de la solicitud" });
+            }
+
+            try
+            {
+                var result = await _UserBusiness.UpdateUserAsync(userDto);
+                if (!result)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                // Retornar un mensaje indicando que el registro fue actualizado correctamente
+                return Ok(new { message = "Registro actualizado correctamente" });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar usuario con ID: {UserId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar usuario con ID: {UserId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
+
+        /// <summary>
+        /// Actualiza campos específicos de un usuario
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialUser(int id, [FromBody] UserDto updatedFields)
+        {
+            try
+            {
+                var result = await _UserBusiness.UpdatePartialUserAsync(id, updatedFields);
+                if (!result)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                // Retornar un mensaje indicando que la actualización parcial fue exitosa
+                return Ok(new { message = "Campos actualizados correctamente" });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente usuario con ID: {UserId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente usuario con ID: {UserId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un usuario (marcar como inactivo)
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteUser(int id)
+        {
+            try
+            {
+                var result = await _UserBusiness.SoftDeleteUserAsync(id);
+                if (!result)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                // Retornar un mensaje indicando que la eliminación lógica fue exitosa
+                return Ok(new { message = "Usuario marcado como inactivo correctamente" });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del usuario con ID: {UserId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del usuario con ID: {UserId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un usuario por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                var result = await _UserBusiness.DeleteUserAsync(id);
+                if (!result)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                // Retornar un mensaje indicando que el usuario fue eliminado correctamente
+                return Ok(new { message = "Usuario eliminado correctamente" });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar usuario con ID: {UserId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar usuario con ID: {UserId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
     }
 }
+

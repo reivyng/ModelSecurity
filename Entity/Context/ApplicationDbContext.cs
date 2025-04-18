@@ -215,6 +215,17 @@ namespace Entity.Contexts
             .WithMany(c => c.Sede)
             .HasForeignKey(s =>  s.CenterId);
 
+            //Sirve para evitar que no se modifique accidentalmente el CreateDate
+            //Sirve para que se actualize la fecha del UpdateDate
+            modelBuilder.Entity<Person>(entity =>
+            {
+                entity.Property(e => e.CreateDate)
+                      .IsRequired()
+                      .ValueGeneratedOnAdd(); // Solo se genera al crear el registro
+
+                entity.Property(e => e.UpdateDate)
+                      .ValueGeneratedOnUpdate(); // Se actualiza cada vez que se modifica el registro
+            });
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
@@ -299,7 +310,18 @@ namespace Entity.Contexts
         /// </summary>
         private void EnsureAudit()
         {
+            // Detectar cambios en las entidades
             ChangeTracker.DetectChanges();
+
+            // Iterar sobre las entidades que están siendo modificadas
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is Person person && entry.State == EntityState.Modified)
+                {
+                    // Actualizar la fecha de modificación
+                    person.UpdateDate = DateTime.Now;
+                }
+            }
         }
 
         /// <summary>

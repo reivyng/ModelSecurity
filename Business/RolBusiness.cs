@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
 using System.ComponentModel.Design;
 using Entity.DTOautogestion;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 
 
@@ -115,7 +116,7 @@ namespace Business
             if (id <= 0)
             {
                 _logger.LogWarning("Se intentó actualizar un rol con un ID inválido: {RolId}", id);
-                throw new Utilities.Exceptions.ValidationException("id", "El ID del rol debe ser mayor a 0");
+                throw new ValidationException("id", "El ID del rol debe ser mayor a 0");
             }
 
             try
@@ -129,11 +130,11 @@ namespace Business
                 }
 
                 // Actualizar solo los campos proporcionados en el DTO
-                if (updatedFields.TypeRol != null)
+                if (!string.IsNullOrWhiteSpace(updatedFields.TypeRol))
                 {
                     existingRol.TypeRol = updatedFields.TypeRol;
                 }
-                if (updatedFields.Description != null)
+                if (!string.IsNullOrWhiteSpace(updatedFields.Description))
                 {
                     existingRol.Description = updatedFields.Description;
                 }
@@ -159,7 +160,6 @@ namespace Business
                 throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el rol con ID {id}", ex);
             }
         }
-
 
         // Método para realizar una eliminación lógica de un rol (marcar como inactivo)
         public async Task<bool> SoftDeleteRolAsync(int id)

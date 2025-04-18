@@ -54,17 +54,22 @@ namespace Data
 
         public async Task<bool> UpdateAsync(Person person)
         {
-            try
+            var existingPerson = await _context.Person.FindAsync(person.Id);
+            if (existingPerson == null)
             {
-                _context.Set<Person>().Update(person);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error al actualizar la persona {ex.Message}");
+                _logger.LogWarning("No se encontró la persona con ID {PersonId} para actualizar", person.Id);
                 return false;
             }
+
+            // Preservar la fecha de creación
+            person.CreateDate = existingPerson.CreateDate;
+
+            // Establecer la fecha de actualización
+            person.UpdateDate = DateTime.Now;
+
+            // Actualizar los valores de la entidad
+            _context.Entry(existingPerson).CurrentValues.SetValues(person);
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> DeleteAsync(int id)

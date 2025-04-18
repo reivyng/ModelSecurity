@@ -220,7 +220,7 @@ namespace Web.Controllers
         /// <response code="400">ID proporcionado no válido</response>
         /// <response code="404">Rol no encontrado</response>
         /// <response code="500">Error interno del servidor</response>
-        [HttpPatch("soft-delete/{id}")]
+        [HttpDelete("soft-delete/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
