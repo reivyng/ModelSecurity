@@ -168,6 +168,50 @@ namespace Web.Controllers
         }
 
         /// <summary>
+        /// Actualiza campos específicos de un rol
+        /// </summary>
+        /// <param name="id">ID del rol a actualizar</param>
+        /// <param name="updatedFields">Campos a actualizar</param>
+        /// <returns>Resultado de la operación</returns>
+        /// <response code="200">Rol actualizado correctamente</response>
+        /// <response code="400">Datos no válidos</response>
+        /// <response code="404">Rol no encontrado</response>
+        /// <response code="500">Error interno del servidor</response>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialRol(int id, [FromBody] RolDto updatedFields)
+        {
+            if (updatedFields == null)
+            {
+                return BadRequest(new { message = "Los datos proporcionados no pueden ser nulos." });
+            }
+
+            try
+            {
+                var result = await _RolBusiness.UpdatePartialRolAsync(id, updatedFields);
+                return Ok(new { message = "Rol actualizado parcialmente correctamente", success = result });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente el rol con ID: {RolId}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (EntityNotFoundException ex)
+            {
+                _logger.LogInformation(ex, "Rol no encontrado con ID: {RolId}", id);
+                return NotFound(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente el rol con ID: {RolId}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+    
+        /// <summary>
         /// Realiza una eliminación lógica de un rol (marca como inactivo)
         /// </summary>
         /// <param name="id">ID del rol a eliminar lógicamente</param>
