@@ -4,6 +4,7 @@ using Entity.Model;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using Utilities.Exceptions;
+using ValidationException = Utilities.Exceptions.ValidationException;
 
 namespace Business
 {
@@ -80,6 +81,157 @@ namespace Business
             {
                 _logger.LogError(ex, "Error al crear nuevo formulario: {Name}", formDto?.Name ?? "null");
                 throw new ExternalServiceException("Base de datos", "Error al crear el formulario", ex);
+            }
+        }
+
+        // Método para actualizar un formulario existente
+        public async Task<bool> UpdateFormAsync(FormDto formDto)
+        {
+            try
+            {
+                ValidateForm(formDto);
+
+                var form = MapToEntity(formDto);
+
+                var result = await _formData.UpdateAsync(form);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar el formulario con ID {FormId}", formDto.Id);
+                    throw new EntityNotFoundException("Form", formDto.Id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el formulario con ID {FormId}", formDto.Id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar el formulario con ID {formDto.Id}", ex);
+            }
+        }
+
+        // Método para actualizar campos específicos de un formulario
+        public async Task<bool> UpdatePartialFormAsync(int id, FormDto updatedFields)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó actualizar un formulario con un ID inválido: {FormId}", id);
+                throw new ValidationException("id", "El ID del formulario debe ser mayor a 0");
+            }
+
+            try
+            {
+                var existingForm = await _formData.GetByidAsync(id);
+                if (existingForm == null)
+                {
+                    _logger.LogInformation("No se encontró el formulario con ID {FormId} para actualización parcial", id);
+                    throw new EntityNotFoundException("Form", id);
+                }
+
+                if (!string.IsNullOrWhiteSpace(updatedFields.Name))
+                {
+                    existingForm.Name = updatedFields.Name;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.Description))
+                {
+                    existingForm.Description = updatedFields.Description;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.Cuestion))
+                {
+                    existingForm.Cuestion = updatedFields.Cuestion;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.TypeCuestion))
+                {
+                    existingForm.TypeCuestion = updatedFields.TypeCuestion;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.Answer))
+                {
+                    existingForm.Answer = updatedFields.Answer;
+                }
+                if (updatedFields.Active != existingForm.Active)
+                {
+                    existingForm.Active = updatedFields.Active;
+                }
+
+                var result = await _formData.UpdateAsync(existingForm);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar parcialmente el formulario con ID {FormId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el formulario con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente el formulario con ID {FormId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el formulario con ID {id}", ex);
+            }
+        }
+
+        // Método para realizar una eliminación lógica de un formulario
+        public async Task<bool> SoftDeleteFormAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó realizar una eliminación lógica con un ID inválido: {FormId}", id);
+                throw new ValidationException("id", "El ID del formulario debe ser mayor a 0");
+            }
+
+            try
+            {
+                var form = await _formData.GetByidAsync(id);
+                if (form == null)
+                {
+                    _logger.LogInformation("No se encontró el formulario con ID {FormId} para eliminación lógica", id);
+                    throw new EntityNotFoundException("Form", id);
+                }
+
+                form.Active = false;
+
+                var result = await _formData.UpdateAsync(form);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo realizar la eliminación lógica del formulario con ID {FormId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del formulario con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al realizar la eliminación lógica del formulario con ID {FormId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del formulario con ID {id}", ex);
+            }
+        }
+
+        // Método para eliminar un formulario por su ID
+        public async Task<bool> DeleteFormAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó eliminar un formulario con un ID inválido: {FormId}", id);
+                throw new ValidationException("id", "El ID del formulario debe ser mayor a 0");
+            }
+
+            try
+            {
+                var result = await _formData.DeleteAsync(id);
+
+                if (!result)
+                {
+                    _logger.LogInformation("No se encontró el formulario con ID {FormId} para eliminar", id);
+                    throw new EntityNotFoundException("Form", id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar el formulario con ID {FormId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al eliminar el formulario con ID {id}", ex);
             }
         }
 

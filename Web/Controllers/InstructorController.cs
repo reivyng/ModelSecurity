@@ -106,5 +106,130 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un instructor existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateInstructor([FromBody] InstructorDto instructorDto)
+        {
+            try
+            {
+                var result = await _instructorBusiness.UpdateInstructorAsync(instructorDto);
+                if (result)
+                {
+                    return Ok(new { message = "El instructor fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El instructor no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar instructor");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar instructor");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un instructor existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialInstructor(int id, [FromBody] InstructorDto updatedFields)
+        {
+            try
+            {
+                var result = await _instructorBusiness.UpdatePartialInstructorAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El instructor fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El instructor no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente instructor con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente instructor con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un instructor
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteInstructor(int id)
+        {
+            try
+            {
+                var result = await _instructorBusiness.SoftDeleteInstructorAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El instructor fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El instructor no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del instructor con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del instructor con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un instructor por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteInstructor(int id)
+        {
+            try
+            {
+                var result = await _instructorBusiness.DeleteInstructorAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El instructor fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El instructor no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar instructor con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar instructor con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }

@@ -106,5 +106,130 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un centro existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateCenter([FromBody] CenterDto centerDto)
+        {
+            try
+            {
+                var result = await _centerBusiness.UpdateCenterAsync(centerDto);
+                if (result)
+                {
+                    return Ok(new { message = "El centro fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El centro no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar centro");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar centro");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un centro existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialCenter(int id, [FromBody] CenterDto updatedFields)
+        {
+            try
+            {
+                var result = await _centerBusiness.UpdatePartialCenterAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El centro fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El centro no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente centro con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente centro con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un centro
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteCenter(int id)
+        {
+            try
+            {
+                var result = await _centerBusiness.SoftDeleteCenterAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El centro fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El centro no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del centro con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del centro con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un centro por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteCenter(int id)
+        {
+            try
+            {
+                var result = await _centerBusiness.DeleteCenterAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El centro fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El centro no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar centro con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar centro con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }

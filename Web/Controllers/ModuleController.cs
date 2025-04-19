@@ -124,5 +124,131 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un módulo existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateModule([FromBody] ModuleDto moduleDto)
+        {
+            try
+            {
+                var result = await _ModuleBusiness.UpdateModuleAsync(moduleDto);
+                if (result)
+                {
+                    return Ok(new { message = "El módulo fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El módulo no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar módulo");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar módulo");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un módulo existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialModule(int id, [FromBody] ModuleDto updatedFields)
+        {
+            try
+            {
+                var result = await _ModuleBusiness.UpdatePartialModuleAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El módulo fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El módulo no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente módulo con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente módulo con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un módulo
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteModule(int id)
+        {
+            try
+            {
+                var result = await _ModuleBusiness.SoftDeleteModuleAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El módulo fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El módulo no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del módulo con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del módulo con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un módulo por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteModule(int id)
+        {
+            try
+            {
+                var result = await _ModuleBusiness.DeleteModuleAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El módulo fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El módulo no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar módulo con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar módulo con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+
     }
 }

@@ -108,5 +108,130 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un aprendiz existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateAprendiz([FromBody] AprendizDto aprendizDto)
+        {
+            try
+            {
+                var result = await _AprendizBusiness.UpdateAprendizAsync(aprendizDto);
+                if (result)
+                {
+                    return Ok(new { message = "El aprendiz fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El aprendiz no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar aprendiz");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar aprendiz");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un aprendiz existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialAprendiz(int id, [FromBody] AprendizDto updatedFields)
+        {
+            try
+            {
+                var result = await _AprendizBusiness.UpdatePartialAprendizAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El aprendiz fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El aprendiz no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente aprendiz con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente aprendiz con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un aprendiz
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteAprendiz(int id)
+        {
+            try
+            {
+                var result = await _AprendizBusiness.SoftDeleteAprendizAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El aprendiz fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El aprendiz no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del aprendiz con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del aprendiz con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un aprendiz por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteAprendiz(int id)
+        {
+            try
+            {
+                var result = await _AprendizBusiness.DeleteAprendizAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El aprendiz fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El aprendiz no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar aprendiz con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar aprendiz con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }

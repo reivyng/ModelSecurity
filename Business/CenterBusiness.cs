@@ -82,6 +82,149 @@ namespace Business
             }
         }
 
+        // Método para actualizar un centro existente
+        public async Task<bool> UpdateCenterAsync(CenterDto centerDto)
+        {
+            try
+            {
+                ValidateCenter(centerDto);
+
+                var center = MapToEntity(centerDto);
+
+                var result = await _centerData.UpdateAsync(center);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar el centro con ID {CenterId}", centerDto.Id);
+                    throw new EntityNotFoundException("Center", centerDto.Id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el centro con ID {CenterId}", centerDto.Id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar el centro con ID {centerDto.Id}", ex);
+            }
+        }
+
+        // Método para actualizar campos específicos de un centro
+        public async Task<bool> UpdatePartialCenterAsync(int id, CenterDto updatedFields)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó actualizar un centro con un ID inválido: {CenterId}", id);
+                throw new ValidationException("id", "El ID del centro debe ser mayor a 0");
+            }
+
+            try
+            {
+                var existingCenter = await _centerData.GetByIdAsync(id);
+                if (existingCenter == null)
+                {
+                    _logger.LogInformation("No se encontró el centro con ID {CenterId} para actualización parcial", id);
+                    throw new EntityNotFoundException("Center", id);
+                }
+
+                if (!string.IsNullOrWhiteSpace(updatedFields.Name))
+                {
+                    existingCenter.Name = updatedFields.Name;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.CodeCenter))
+                {
+                    existingCenter.CodeCenter = updatedFields.CodeCenter;
+                }
+                if (updatedFields.Active != existingCenter.Active)
+                {
+                    existingCenter.Active = updatedFields.Active;
+                }
+                if (updatedFields.RegionalId > 0 && updatedFields.RegionalId != existingCenter.RegionalId)
+                {
+                    existingCenter.RegionalId = updatedFields.RegionalId;
+                }
+
+                var result = await _centerData.UpdateAsync(existingCenter);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar parcialmente el centro con ID {CenterId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el centro con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente el centro con ID {CenterId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el centro con ID {id}", ex);
+            }
+        }
+
+        // Método para realizar una eliminación lógica de un centro
+        public async Task<bool> SoftDeleteCenterAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó realizar una eliminación lógica con un ID inválido: {CenterId}", id);
+                throw new ValidationException("id", "El ID del centro debe ser mayor a 0");
+            }
+
+            try
+            {
+                var center = await _centerData.GetByIdAsync(id);
+                if (center == null)
+                {
+                    _logger.LogInformation("No se encontró el centro con ID {CenterId} para eliminación lógica", id);
+                    throw new EntityNotFoundException("Center", id);
+                }
+
+                center.Active = false;
+
+                var result = await _centerData.UpdateAsync(center);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo realizar la eliminación lógica del centro con ID {CenterId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del centro con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al realizar la eliminación lógica del centro con ID {CenterId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del centro con ID {id}", ex);
+            }
+        }
+
+        // Método para eliminar un centro por su ID
+        public async Task<bool> DeleteCenterAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó eliminar un centro con un ID inválido: {CenterId}", id);
+                throw new ValidationException("id", "El ID del centro debe ser mayor a 0");
+            }
+
+            try
+            {
+                var result = await _centerData.DeleteAsync(id);
+
+                if (!result)
+                {
+                    _logger.LogInformation("No se encontró el centro con ID {CenterId} para eliminar", id);
+                    throw new EntityNotFoundException("Center", id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar el centro con ID {CenterId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al eliminar el centro con ID {id}", ex);
+            }
+        }
+
         // Método para validar el DTO
         private void ValidateCenter(CenterDto centerDto)
         {

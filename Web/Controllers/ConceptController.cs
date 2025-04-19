@@ -106,5 +106,130 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un concepto existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateConcept([FromBody] ConceptDto conceptDto)
+        {
+            try
+            {
+                var result = await _conceptBusiness.UpdateConceptAsync(conceptDto);
+                if (result)
+                {
+                    return Ok(new { message = "El concepto fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El concepto no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar concepto");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar concepto");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un concepto existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialConcept(int id, [FromBody] ConceptDto updatedFields)
+        {
+            try
+            {
+                var result = await _conceptBusiness.UpdatePartialConceptAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El concepto fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El concepto no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente concepto con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente concepto con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un concepto
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteConcept(int id)
+        {
+            try
+            {
+                var result = await _conceptBusiness.SoftDeleteConceptAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El concepto fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El concepto no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del concepto con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del concepto con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un concepto por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteConcept(int id)
+        {
+            try
+            {
+                var result = await _conceptBusiness.DeleteConceptAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El concepto fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El concepto no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar concepto con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar concepto con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }

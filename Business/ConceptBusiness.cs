@@ -82,6 +82,145 @@ namespace Business
             }
         }
 
+        // Método para actualizar un concepto existente
+        public async Task<bool> UpdateConceptAsync(ConceptDto conceptDto)
+        {
+            try
+            {
+                ValidateConcept(conceptDto);
+
+                var concept = MapToEntity(conceptDto);
+
+                var result = await _conceptData.UpdateAsync(concept);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar el concepto con ID {ConceptId}", conceptDto.Id);
+                    throw new EntityNotFoundException("Concept", conceptDto.Id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar el concepto con ID {ConceptId}", conceptDto.Id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar el concepto con ID {conceptDto.Id}", ex);
+            }
+        }
+
+        // Método para actualizar campos específicos de un concepto
+        public async Task<bool> UpdatePartialConceptAsync(int id, ConceptDto updatedFields)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó actualizar un concepto con un ID inválido: {ConceptId}", id);
+                throw new ValidationException("id", "El ID del concepto debe ser mayor a 0");
+            }
+
+            try
+            {
+                var existingConcept = await _conceptData.GetByIdAsync(id);
+                if (existingConcept == null)
+                {
+                    _logger.LogInformation("No se encontró el concepto con ID {ConceptId} para actualización parcial", id);
+                    throw new EntityNotFoundException("Concept", id);
+                }
+
+                if (!string.IsNullOrWhiteSpace(updatedFields.Name))
+                {
+                    existingConcept.Name = updatedFields.Name;
+                }
+                if (!string.IsNullOrWhiteSpace(updatedFields.Observation))
+                {
+                    existingConcept.Observation = updatedFields.Observation;
+                }
+                if (updatedFields.Active != existingConcept.Active)
+                {
+                    existingConcept.Active = updatedFields.Active;
+                }
+
+                var result = await _conceptData.UpdateAsync(existingConcept);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo actualizar parcialmente el concepto con ID {ConceptId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el concepto con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente el concepto con ID {ConceptId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al actualizar parcialmente el concepto con ID {id}", ex);
+            }
+        }
+
+        // Método para realizar una eliminación lógica de un concepto
+        public async Task<bool> SoftDeleteConceptAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó realizar una eliminación lógica con un ID inválido: {ConceptId}", id);
+                throw new ValidationException("id", "El ID del concepto debe ser mayor a 0");
+            }
+
+            try
+            {
+                var concept = await _conceptData.GetByIdAsync(id);
+                if (concept == null)
+                {
+                    _logger.LogInformation("No se encontró el concepto con ID {ConceptId} para eliminación lógica", id);
+                    throw new EntityNotFoundException("Concept", id);
+                }
+
+                concept.Active = false;
+
+                var result = await _conceptData.UpdateAsync(concept);
+
+                if (!result)
+                {
+                    _logger.LogWarning("No se pudo realizar la eliminación lógica del concepto con ID {ConceptId}", id);
+                    throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del concepto con ID {id}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al realizar la eliminación lógica del concepto con ID {ConceptId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al realizar la eliminación lógica del concepto con ID {id}", ex);
+            }
+        }
+
+        // Método para eliminar un concepto por su ID
+        public async Task<bool> DeleteConceptAsync(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("Se intentó eliminar un concepto con un ID inválido: {ConceptId}", id);
+                throw new ValidationException("id", "El ID del concepto debe ser mayor a 0");
+            }
+
+            try
+            {
+                var result = await _conceptData.DeleteAsync(id);
+
+                if (!result)
+                {
+                    _logger.LogInformation("No se encontró el concepto con ID {ConceptId} para eliminar", id);
+                    throw new EntityNotFoundException("Concept", id);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error al eliminar el concepto con ID {ConceptId}", id);
+                throw new ExternalServiceException("Base de datos", $"Error al eliminar el concepto con ID {id}", ex);
+            }
+        }
+
         // Método para validar el DTO
         private void ValidateConcept(ConceptDto conceptDto)
         {

@@ -123,5 +123,130 @@ namespace Web.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// Actualiza un formulario existente
+        /// </summary>
+        [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdateForm([FromBody] FormDto formDto)
+        {
+            try
+            {
+                var result = await _FormBusiness.UpdateFormAsync(formDto);
+                if (result)
+                {
+                    return Ok(new { message = "El formulario fue actualizado exitosamente." });
+                }
+                return NotFound(new { message = "El formulario no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar formulario");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar formulario");
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Actualiza parcialmente un formulario existente
+        /// </summary>
+        [HttpPatch("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> UpdatePartialForm(int id, [FromBody] FormDto updatedFields)
+        {
+            try
+            {
+                var result = await _FormBusiness.UpdatePartialFormAsync(id, updatedFields);
+                if (result)
+                {
+                    return Ok(new { message = "El formulario fue actualizado parcialmente con éxito." });
+                }
+                return NotFound(new { message = "El formulario no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al actualizar parcialmente formulario con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al actualizar parcialmente formulario con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Realiza una eliminación lógica de un formulario
+        /// </summary>
+        [HttpDelete("soft/{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> SoftDeleteForm(int id)
+        {
+            try
+            {
+                var result = await _FormBusiness.SoftDeleteFormAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El formulario fue eliminado lógicamente con éxito." });
+                }
+                return NotFound(new { message = "El formulario no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al realizar eliminación lógica del formulario con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al realizar eliminación lógica del formulario con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Elimina un formulario por su ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            try
+            {
+                var result = await _FormBusiness.DeleteFormAsync(id);
+                if (result)
+                {
+                    return Ok(new { message = "El formulario fue eliminado exitosamente." });
+                }
+                return NotFound(new { message = "El formulario no fue encontrado." });
+            }
+            catch (ValidationException ex)
+            {
+                _logger.LogWarning(ex, "Validación fallida al eliminar formulario con ID: {Id}", id);
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ExternalServiceException ex)
+            {
+                _logger.LogError(ex, "Error al eliminar formulario con ID: {Id}", id);
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }
